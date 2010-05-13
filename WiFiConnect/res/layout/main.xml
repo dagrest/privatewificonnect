@@ -38,19 +38,23 @@
 		android:layout_height="wrap_content">
 	</TextView>
 	
-	<Spinner android:id="@+id/Spinner01" android:layout_width="wrap_content" android:layout_height="wrap_content"></Spinner><TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="28dp"></TextView><TextView android:id="@+id/StatusText"
+	<TextView android:text="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/NetworkIDText" android:textSize="28dp" android:editable="false"></TextView><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/NetSelectBtn" android:text="Select Network" android:textSize="20dp"></Button><TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="18dp"></TextView><TextView android:id="@+id/StatusText"
 		android:autoText="true"
 		android:singleLine="true"
 		android:text="" 
 		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content" android:textSize="24dp">
+		android:layout_height="wrap_content" android:textSize="24dp" android:gravity="center">
 	</TextView>
-	<TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="32dp"></TextView><Button 
+	<TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="18dp"></TextView><Button 
 		android:text="Connect" 
 		android:id="@+id/ConnectButton" 
 		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content" android:textSize="20dp">
 	</Button>
+
+
+
+
 
 
 
