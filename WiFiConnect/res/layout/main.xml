@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TableLayout 
+	android:orientation="vertical"
+	android:id="@+id/mainLayout" 
+	android:layout_width="fill_parent" 
+	android:layout_height="fill_parent" 
+	xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<TextView android:textSize="35dp"
+		android:id="@+id/UserText"
+		android:text="User:" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</TextView>
+	<EditText android:text="" 
+		android:id="@+id/UserEditText" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</EditText>
+	<TextView android:textSize="35dp"
+		android:id="@+id/PassText"
+		android:text="Password:" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</TextView>
+	<EditText android:text="" 
+		android:password="true"
+		android:id="@+id/PassEditText" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</EditText>
+	<TextView android:textSize="35dp"
+	android:padding="4dp"
+		android:id="@+id/NetIDText"
+		android:text="WiFi netork ID:" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</TextView>
+	<EditText android:text="qwe" 
+		android:bufferType="normal"
+		android:singleLine="true"
+		android:autoText="true"
+		android:id="@+id/NetIDEditText" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</EditText>
+	<TextView android:textSize="28dp"
+		android:id="@+id/StatusText"
+		android:autoText="true"
+		android:singleLine="true"
+		android:text="" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</TextView>
+	<Button 
+		android:text="Connect" 
+		android:id="@+id/ConnectButton" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</Button>
+</TableLayout>
+
