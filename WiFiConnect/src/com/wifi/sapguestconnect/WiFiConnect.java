@@ -3,6 +3,7 @@ package com.wifi.sapguestconnect;
 import com.wifi.sapguestconnect.ErrorMessages.errorMessages;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -31,6 +32,9 @@ public class WiFiConnect extends Activity {
         Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'onCreate' function started...");
         super.onCreate(icicle);
         setContentView(R.layout.main);
+        
+        // Lock screen orientation to vertical
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); 
         
         // Get the EditText, TextView and Button References 
         userEditText = (EditText)findViewById(R.id.UserEditText);
