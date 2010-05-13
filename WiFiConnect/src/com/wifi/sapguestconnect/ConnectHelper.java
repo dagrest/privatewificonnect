@@ -25,41 +25,45 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-public class ConnectLib {
-	private String bssID = "00:0b:86:5c:b2:42"; // SAP WiFi network ID
+public class ConnectHelper {
+	
     private final String MY_DATABASE_TABLE = "DataTable";
 	private Context context;
     private LoginData loginData = new LoginData();
     private boolean isLoginDataChanged = false;
     
-	public boolean isLoginDataChanged() {
+	boolean isLoginDataChanged() {
 		return isLoginDataChanged;
 	}
 
-	public LoginData getLoginData(){
+	LoginData getLoginData(){
 		return loginData;
 	}
 	
-	public void setLoginDataChanged(boolean isLoginDataChanged) {
+	void setLoginDataChanged(boolean isLoginDataChanged) {
 		this.isLoginDataChanged = isLoginDataChanged;
 	}
 
 	private WifiManager wm = null;
 
-    public ConnectLib(final Context context, final WifiManager wm){
+    ConnectHelper(final Context context, final WifiManager wm){
     	this.context = context;
     	this.wm = wm;
     }
     
-    public boolean isLoginDataExist(){
-		if(loginData.getUser() != null && loginData.getPass() != null && loginData.getBssID() != null &&
-		   loginData.getUser() != "" && loginData.getPass() != "" && loginData.getBssID() != ""){
+    boolean isLoginDataExist(){
+		if(loginData.getUser() != null && loginData.getPass() != null && loginData.getSSID() != null &&
+		   loginData.getUser() != "" && loginData.getPass() != "" && loginData.getSSID() != ""){
 			return true;
 		}
 		return false;
 	}
 
-	public void SaveLoginData(final String user, final String pass, final String netID){
+    boolean isConnectedToCorrectWiFi(final String ssID) {
+    	return loginData.getSSID().compareToIgnoreCase(ssID) == 0;
+    }
+    
+	void saveLoginData(final String user, final String pass, final String netID){
 		DataBaseHelper myDbHelper = new DataBaseHelper(context);
 		try {
 				myDbHelper.createDataBase();
@@ -76,16 +80,16 @@ public class ConnectLib {
 		
 		loginData.setUser(user);
 		loginData.setPass(pass);
-		loginData.setBssID(netID);
+		loginData.setSSID(netID);
 
-		long res = myDbHelper.saveLoginInformation(MY_DATABASE_TABLE, loginData.getUser(), loginData.getPass(), loginData.getBssID());
+		long res = myDbHelper.saveLoginInformation(MY_DATABASE_TABLE, loginData.getUser(), loginData.getPass(), loginData.getSSID());
 		loginData = myDbHelper.getLoginData(MY_DATABASE_TABLE);
 		
 		isLoginDataChanged = false;
 		myDbHelper.close();
 	}
 
-	public void LoadLoginData(){
+	void LoadLoginData(){
 		DataBaseHelper myDbHelper = new DataBaseHelper(context);
 		try {
 				Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' before 'createDataBase' ...");
@@ -105,8 +109,9 @@ public class ConnectLib {
 		}
 		
 		loginData = myDbHelper.getLoginData(MY_DATABASE_TABLE);
-		if(loginData.getBssID() == null || loginData.getBssID().equals("")){
-			loginData.setBssID(bssID);
+		String ssid = loginData.getSSID();
+		if(ssid != null && ssid.length() > 0){
+			loginData.setSSID(ssid);
 		}
 		
 //		// create and save login information in database
@@ -118,7 +123,7 @@ public class ConnectLib {
 		myDbHelper.close();
 	}
 
-	public boolean isLoggedInToSAP(){
+	boolean isLoggedInToSAP(){
         if(ifWifiEnabled() == true){
             String connUrl = "https://www.google.com";
             
@@ -138,7 +143,7 @@ public class ConnectLib {
 		return false;
 	}
 	
-	public errorMessages loginToSAPWiFi(){
+	errorMessages loginToSAPWiFi(){
 		boolean isLoginSucceeded = false;
         if(ifWifiEnabled() == true){
             String macAddress = getMacAddress();
@@ -147,7 +152,7 @@ public class ConnectLib {
             String connUrl = "https://wlan.sap.com/cgi-bin/login?cmd=login&mac=" + macAddress + "&ip=" + ipAddress + 
                              "&essid=SAP-Guest&url=http://www.google.com";
 
-            if(getBSSID().equals(loginData.getBssID())){
+            if(getSSID().equals(loginData.getSSID())){
     	        HttpsURLConnection httpsConnection = openConnectionToHTTPS(connUrl);
     	        logInToWiFi(httpsConnection);
     	        if(isLoggedIn(httpsConnection)){
@@ -167,7 +172,7 @@ public class ConnectLib {
             	//TODO show message that it is not SAP WiFi currently connected
             	isLoginSucceeded = false;
             	//setValue(statusText, "Logged in successfully.");
-            	return errorMessages.NOT_SAP_WIFI;
+            	return errorMessages.NOT_CORRECT_WIFI;
             }
         }
         else{
@@ -177,7 +182,7 @@ public class ConnectLib {
         }
 	}
 	
-	public HttpsURLConnection openConnectionToHTTPS(String connUrl)
+	 HttpsURLConnection openConnectionToHTTPS(String connUrl)
 	{
 		HttpsURLConnection httpsConnection = null;
 		try {
@@ -296,7 +301,7 @@ public class ConnectLib {
 		return isLoggedIn;
 	}
 	
-	public String getMacAddress() {
+	String getMacAddress() {
 		String mac = null;
 		if (wm != null) {
 			WifiInfo wi = wm.getConnectionInfo();
@@ -306,15 +311,15 @@ public class ConnectLib {
 		return mac;
 	}
 	
-	public String getBSSID() {
-		String bssid = null;
+	String getSSID() {
+		String ssid = null;
 
 		if (wm != null) {
 			WifiInfo wi = wm.getConnectionInfo();
-			bssid = wi.getBSSID();
+			ssid = wi.getSSID();
 		}
 
-		return bssid;
+		return ssid;
 	}
 	
 	boolean ifWifiEnabled() {
@@ -327,7 +332,7 @@ public class ConnectLib {
 		return isEnabled;
 	}
 	
-	public String getIPAddress() {
+	String getIPAddress() {
 		String strIP = null;
 		int ip = -1;
 
