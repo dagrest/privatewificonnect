@@ -37,27 +37,24 @@
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content">
 	</TextView>
-	<EditText android:text="qwe" 
-		android:bufferType="normal"
-		android:singleLine="true"
-		android:autoText="true"
-		android:id="@+id/NetIDEditText" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content">
-	</EditText>
-	<TextView android:textSize="28dp"
-		android:id="@+id/StatusText"
+	
+	<Spinner android:id="@+id/Spinner01" android:layout_width="wrap_content" android:layout_height="wrap_content"></Spinner><TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="28dp"></TextView><TextView android:id="@+id/StatusText"
 		android:autoText="true"
 		android:singleLine="true"
 		android:text="" 
 		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content" android:textSize="24dp">
 	</TextView>
-	<Button 
+	<TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="32dp"></TextView><Button 
 		android:text="Connect" 
 		android:id="@+id/ConnectButton" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content">
 	</Button>
+
+
+
+
+
 </TableLayout>
 
