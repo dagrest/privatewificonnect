@@ -3,18 +3,18 @@ package com.wifi.sapguestconnect;
 public class LoginData {
 	private String user;
 	private String pass;
-	private String bssID;
+	private String ssID;
 	
 	public LoginData(){
 		user = null;
 		pass = null;
-		bssID = null;
+		ssID = null;
 	}
 	
 	public LoginData(String user, String pass, String bssID){
 		this.user = user;
 		this.pass = pass;
-		this.bssID = bssID;
+		this.ssID = bssID;
 	}	
 	
 	public String getUser() {
@@ -29,10 +29,10 @@ public class LoginData {
 	public void setPass(String pass) {
 		this.pass = pass;
 	}
-	public String getBssID() {
-		return bssID;
+	public String getSSID() {
+		return ssID;
 	}
-	public void setBssID(String bssID) {
-		this.bssID = bssID;
+	public void setSSID(String bssID) {
+		this.ssID = bssID;
 	}
 }
