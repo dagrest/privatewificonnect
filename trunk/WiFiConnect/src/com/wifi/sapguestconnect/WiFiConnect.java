@@ -35,7 +35,11 @@ public class WiFiConnect extends Activity {
     private ConnectHelper connectHelper;
     private errorMessages errorCode;
     private Spinner ssidSpinner = null;
-    private String[] ssidArray = null;
+    private TextView networkID = null;
+   
+
+	private Button selectNetworkBtn = null;
+    
     /** Called with the activity is first created. */
 	@Override
     public void onCreate(Bundle icicle)
@@ -50,35 +54,19 @@ public class WiFiConnect extends Activity {
         passEditText = (EditText)findViewById(R.id.PassEditText);
         statusText = (TextView)findViewById(R.id.StatusText);
         connectButton = (Button)findViewById(R.id.ConnectButton); 
-        ssidSpinner = (Spinner) findViewById(R.id.Spinner01);
+        selectNetworkBtn = (Button)findViewById(R.id.NetSelectBtn); 
+        networkID = (TextView)findViewById(R.id.NetworkIDText);
         
 		if (wm == null) {
 			wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		}
 		
 		connectHelper = new ConnectHelper(this, wm);
-		ssidSpinner.setOnItemSelectedListener(new MyOnItemSelectedListener(connectHelper));
 		
-		if(wm.isWifiEnabled()) {
-			List<ScanResult> scanRes = wm.getScanResults();
-			
-			HashSet<String> tmpSet = new HashSet<String>(scanRes.size());
-			
-			for(ScanResult res : scanRes) {
-				tmpSet.add(res.SSID);
-			}
-			
-			ssidArray = new String[tmpSet.size()];
-			int i = 0;
-			for(String ssid : tmpSet) {
-				ssidArray[i++] = ssid;
-			}
-			
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, ssidArray);   
-			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);                  
-			ssidSpinner.setAdapter(adapter); 
-		}
-		else {
+		selectNetworkBtn.setOnClickListener(new SelectNetworkListener(wm, this));
+		//ssidSpinner.setOnItemSelectedListener(new MyOnItemSelectedListener(connectHelper));
+		
+		if(! wm.isWifiEnabled()) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setMessage("WiFi is disabled, please enable it and start application again")
 			       .setCancelable(false)
@@ -131,20 +119,29 @@ public class WiFiConnect extends Activity {
 		fillLoginDataDialog();
     }
 
-	public EditText getUserEditText() {
+	EditText getUserEditText() {
 		return userEditText;
 	}
 
-	public void setUserEditText(EditText userEditText) {
+	TextView getNetworkID() {
+		return networkID;
+	}
+	 
+	 
+	void setUserEditText(EditText userEditText) {
 		this.userEditText = userEditText;
 	}
 
-	public EditText getPassEditText() {
+	EditText getPassEditText() {
 		return passEditText;
 	}
 
-	public void setPassEditText(EditText passEditText) {
+	void setPassEditText(EditText passEditText) {
 		this.passEditText = passEditText;
+	}
+	
+	void setNetworkID(final String networkID) {
+		this.networkID.setText(networkID);
 	}
 	
 	// Convert and set error message according to error code
@@ -191,33 +188,8 @@ public class WiFiConnect extends Activity {
 		LoginData loginData = connectHelper.getLoginData();
 		setValue(userEditText, loginData.getUser());
 		setValue(passEditText, loginData.getPass());
-		//setValue(netIDEditText, loginData.getSSID());
+		setValue(networkID, loginData.getSSID());
 		setValue(statusText, "");
 		connectHelper.setLoginDataChanged(false);
 	}
-
-//	// Create popup window	
-//	public void show(){
-//		LayoutInflater inflater = this.getLayoutInflater();
-//    	View view= inflater.inflate(R.layout.notification,(ViewGroup)findViewById(R.id.Notification)); 
-//
-//    	PopupWindow popupWindow = new PopupWindow(view, LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT, false); 
-//    	popupWindow.setAnimationStyle(android.R.style.Animation_Dialog); 
-//
-//    	setContentView(R.layout.main);
-//    	
-//    	TextView layout = null;
-//    	try {
-//        	layout=(TextView)this.findViewById(R.id.mainLayout); 
-//		} catch (Exception e) {
-//			String errorMessage = e.getMessage();
-//			int i = 0;
-//		} 
-//    	try {
-//			popupWindow.showAtLocation(layout, Gravity.CENTER, 0, 0);
-//		} catch (Exception e) {
-//			String errorMessage = e.getMessage();
-//			int i = 0;
-//		} 
-//	}
 }

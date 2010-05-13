@@ -26,7 +26,8 @@ public class MyConnectOnClickListener implements View.OnClickListener {
 			this.wifiActivity.setLogMessage(errorMessages.WIFI_TURNED_OFF);
 		}
 		else {
-			if(this.connectHelper.isConnectedToCorrectWiFi(this.wifimanager.getConnectionInfo().getSSID()) == true) {
+			if(this.wifiActivity.getNetworkID().getText().toString().
+					compareToIgnoreCase((this.wifimanager.getConnectionInfo().getSSID())) == 0) {
 				if(this.connectHelper.isLoggedInToSAP() == false) {
 					this.wifiActivity.setStatusText("");
 					//show();
@@ -36,7 +37,7 @@ public class MyConnectOnClickListener implements View.OnClickListener {
 					else{
 						this.connectHelper.saveLoginData(this.wifiActivity.getUserEditText().getText().toString(), 
 								this.wifiActivity.getPassEditText().getText().toString(), 
-								this.connectHelper.getLoginData().getSSID());
+								this.wifiActivity.getNetworkID().getText().toString());
 						this.wifiActivity.fillLoginDataDialog();
 						this.wifiActivity.setLogMessage(this.connectHelper.loginToSAPWiFi());
 					}
@@ -45,7 +46,7 @@ public class MyConnectOnClickListener implements View.OnClickListener {
 					this.wifiActivity.setLogMessage(errorMessages.ALREADY_CONNECTED);
 					this.connectHelper.saveLoginData(this.wifiActivity.getUserEditText().getText().toString(), 
 							this.wifiActivity.getPassEditText().getText().toString(), 
-							this.connectHelper.getLoginData().getSSID());
+							this.wifiActivity.getNetworkID().getText().toString());
 				}
 			}
 			else {
