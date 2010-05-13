@@ -22,27 +22,35 @@ public class MyConnectOnClickListener implements View.OnClickListener {
 	
 	@Override
 	public void onClick(View v) {
-		if(this.connectHelper.isConnectedToCorrectWiFi(this.wifimanager.getConnectionInfo().getSSID()) == true) {
-			if(this.connectHelper.isLoggedInToSAP() == false) {
-				this.wifiActivity.setStatusText("");
-	        	//show();
-	        	if(this.connectHelper.isLoginDataExist() == true && this.connectHelper.isLoginDataChanged() == false){
-	        		this.wifiActivity.setLogMessage(connectHelper.loginToSAPWiFi());
-	        	}
-	        	else{
-	        		this.connectHelper.saveLoginData(this.wifiActivity.getUserEditText().getText().toString(), 
-	        										 this.wifiActivity.getPassEditText().getText().toString(), 
-	        										 this.connectHelper.getLoginData().getSSID());
-	        		this.wifiActivity.fillLoginDataDialog();
-	        		this.wifiActivity.setLogMessage(this.connectHelper.loginToSAPWiFi());
-	        	}
-	    	}
-	    	else{
-	    		this.wifiActivity.setLogMessage(errorMessages.ALREADY_CONNECTED);
-	    	}
+		if(this.wifimanager.isWifiEnabled() == false) {
+			this.wifiActivity.setLogMessage(errorMessages.WIFI_TURNED_OFF);
 		}
 		else {
-			this.wifiActivity.setLogMessage(errorMessages.NOT_CORRECT_WIFI);
+			if(this.connectHelper.isConnectedToCorrectWiFi(this.wifimanager.getConnectionInfo().getSSID()) == true) {
+				if(this.connectHelper.isLoggedInToSAP() == false) {
+					this.wifiActivity.setStatusText("");
+					//show();
+					if(this.connectHelper.isLoginDataExist() == true && this.connectHelper.isLoginDataChanged() == false){
+						this.wifiActivity.setLogMessage(connectHelper.loginToSAPWiFi());
+					}
+					else{
+						this.connectHelper.saveLoginData(this.wifiActivity.getUserEditText().getText().toString(), 
+								this.wifiActivity.getPassEditText().getText().toString(), 
+								this.connectHelper.getLoginData().getSSID());
+						this.wifiActivity.fillLoginDataDialog();
+						this.wifiActivity.setLogMessage(this.connectHelper.loginToSAPWiFi());
+					}
+				}
+				else{
+					this.wifiActivity.setLogMessage(errorMessages.ALREADY_CONNECTED);
+					this.connectHelper.saveLoginData(this.wifiActivity.getUserEditText().getText().toString(), 
+							this.wifiActivity.getPassEditText().getText().toString(), 
+							this.connectHelper.getLoginData().getSSID());
+				}
+			}
+			else {
+				this.wifiActivity.setLogMessage(errorMessages.NOT_CORRECT_WIFI);
+			}
 		}
 	}
 }

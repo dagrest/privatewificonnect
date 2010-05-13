@@ -5,7 +5,9 @@ import java.util.List;
 
 import com.wifi.sapguestconnect.ErrorMessages.errorMessages;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -75,39 +77,22 @@ public class WiFiConnect extends Activity {
 			ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, ssidArray);   
 			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);                  
 			ssidSpinner.setAdapter(adapter); 
-			
-			connectButton.setOnClickListener(new MyConnectOnClickListener(this, wm, connectHelper));
 		}
-		
-		
-
-//		connectButton.setOnClickListener(new View.OnClickListener() {
-//	        public void onClick(View v) 
-//	        {
-//	        	if(connectHelper.isLoggedInToSAP() == false)
-//	        	{
-//		    		setValue(statusText, "");
-//		        	//show();
-//		        	if(connectHelper.isLoginDataExist() == true && connectHelper.isLoginDataChanged() == false){
-//		        		errorCode = connectHelper.loginToSAPWiFi();
-//		        		setLogMessage(errorCode);
-//		        	}
-//		        	else{
-//		        		connectHelper.SaveLoginData(userEditText.getText().toString(), 
-//		        							 passEditText.getText().toString(), 
-//		        							 netIDEditText.getText().toString());
-//		        		fillLoginDataDialog();
-//		        		errorCode = connectHelper.loginToSAPWiFi();
-//		        		setLogMessage(errorCode);
-//		        	}
-//	        	}
-//	        	else{
-//	        		setLogMessage(errorMessages.SUCCESS);
-//	        	}
-//	        	//finish();
-//	        }         
-//        });
+		else {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("WiFi is disabled, please enable it and start application again")
+			       .setCancelable(false)
+			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   WiFiConnect.this.finish();
+			           }
+			       });	     
+			AlertDialog alert = builder.create();
+			alert.show();
+		}
         
+		connectButton.setOnClickListener(new MyConnectOnClickListener(this, wm, connectHelper));
+		
 		userEditText.addTextChangedListener(new TextWatcher() {
 			public void afterTextChanged(Editable s) {
 				connectHelper.setLoginDataChanged(true);
@@ -140,22 +125,6 @@ public class WiFiConnect extends Activity {
 				// do nothing
 			}
 		});
-
-//		netIDEditText.addTextChangedListener(new TextWatcher() {
-//			public void afterTextChanged(Editable s) {
-//				connectHelper.setLoginDataChanged(true);
-//			}
-//
-//			public void beforeTextChanged(CharSequence s, int start, int count,
-//					int after) {
-//				// do nothing
-//			}
-//
-//			public void onTextChanged(CharSequence s, int start, int before,
-//					int count) {
-//				// do nothing
-//			}
-//		});
 
 		// Get login data from DB 
 		connectHelper.LoadLoginData();
@@ -199,7 +168,7 @@ public class WiFiConnect extends Activity {
 	}
 	
 	void setStatusText(final String value){
-		setValue(statusText, 65407, value);
+		setValue(statusText, value);
 	}
 	
 	private void setValue(final TextView tv, int color, final String value){
