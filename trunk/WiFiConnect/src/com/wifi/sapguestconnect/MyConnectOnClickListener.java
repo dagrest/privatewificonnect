@@ -3,6 +3,7 @@ package com.wifi.sapguestconnect;
 import com.wifi.sapguestconnect.ErrorMessages.errorMessages;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.net.wifi.WifiManager;
@@ -22,6 +23,11 @@ public class MyConnectOnClickListener implements View.OnClickListener {
 	
 	@Override
 	public void onClick(View v) {
+		ProgressDialog myProgressDialog = null;
+		myProgressDialog = new ProgressDialog(this.wifiActivity);
+		myProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		myProgressDialog.setTitle("Connecting to the network...");
+		myProgressDialog.show();
 		if(this.wifimanager.isWifiEnabled() == false) {
 			this.wifiActivity.setLogMessage(errorMessages.WIFI_TURNED_OFF);
 		}
@@ -53,5 +59,6 @@ public class MyConnectOnClickListener implements View.OnClickListener {
 				this.wifiActivity.setLogMessage(errorMessages.NOT_CORRECT_WIFI);
 			}
 		}
+		myProgressDialog.dismiss();
 	}
 }
