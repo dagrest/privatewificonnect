@@ -16,7 +16,7 @@
 	<EditText android:text="" 
 		android:id="@+id/UserEditText" 
 		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content" android:singleLine="false" android:cursorVisible="true">
 	</EditText>
 	<TextView android:textSize="35dp"
 		android:id="@+id/PassText"
@@ -28,7 +28,7 @@
 		android:password="true"
 		android:id="@+id/PassEditText" 
 		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content" android:singleLine="true">
 	</EditText>
 	<TextView android:textSize="35dp"
 	android:padding="4dp"
