@@ -28,9 +28,7 @@ public class MainTest extends Activity {
         
         buttonStartService.setOnClickListener(new StartServiceOnClickListener());
         buttonStopService.setOnClickListener(new StopServiceOnClickListener(this));
-        this.
-        messageText.setText("This is initial text... And another initial text...");
-        //finish();
         
+        messageText.setText("This is initial text... And another initial text...");
     }
 }
