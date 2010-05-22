@@ -26,7 +26,7 @@ public class MainTest extends Activity {
         buttonStartService = (Button)findViewById(R.id.StartService);
         buttonStopService = (Button)findViewById(R.id.StopService);
         
-        buttonStartService.setOnClickListener(new StartServiceOnClickListener());
+        buttonStartService.setOnClickListener(new StartServiceOnClickListener(this, "test_text.txt"));
         buttonStopService.setOnClickListener(new StopServiceOnClickListener(this));
         
         messageText.setText("This is initial text... And another initial text...");
