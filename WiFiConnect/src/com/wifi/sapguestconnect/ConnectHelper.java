@@ -339,7 +339,12 @@ public class ConnectHelper {
 		if (wm != null) {
 			WifiInfo wi = wm.getConnectionInfo();
 			ip = wi.getIpAddress();
-			String binIP = Integer.toBinaryString(ip);
+			StringBuilder binIP = new StringBuilder(Integer.toBinaryString(ip));
+			int len = binIP.length();
+			for(int i = 0 ; i < 32 - len; ++i) {
+				binIP.insert(0, '0');
+			}
+			
 			StringBuilder stringIP = new StringBuilder();
 			
 			for (int i = 3; i >= 0; --i) {
