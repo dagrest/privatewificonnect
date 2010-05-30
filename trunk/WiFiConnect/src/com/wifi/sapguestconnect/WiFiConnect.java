@@ -78,6 +78,11 @@ public class WiFiConnect extends Activity {
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
+		else{
+			if(this.connectHelper.isLoggedInToSAP() == true) {
+				this.setLogMessage(errorMessages.ALREADY_CONNECTED);
+			}
+		}
         
 		connectButton.setOnClickListener(new MyConnectOnClickListener(this, wm, connectHelper));
 		
