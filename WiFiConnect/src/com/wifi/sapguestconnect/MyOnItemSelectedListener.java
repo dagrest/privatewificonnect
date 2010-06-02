@@ -12,12 +12,10 @@ public class MyOnItemSelectedListener implements OnItemSelectedListener {
 		this.connectHelper = connectHelper;
 	}
 	
-	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 		connectHelper.getLoginData().setSSID(parent.getItemAtPosition(pos).toString());
 	}
 
-	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {
 		// TODO Auto-generated method stub
 

@@ -21,7 +21,6 @@ public class SelectNetworkListener implements OnClickListener {
 		this.activity = activity;
 	}
 	
-	@Override
 	public void onClick(View v) {
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);

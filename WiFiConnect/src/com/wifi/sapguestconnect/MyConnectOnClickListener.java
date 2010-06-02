@@ -7,30 +7,49 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.net.wifi.WifiManager;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.Window;
 
-public class MyConnectOnClickListener implements View.OnClickListener {
+public class MyConnectOnClickListener implements View.OnClickListener{
 
 	private WifiManager wifimanager = null;
 	private ConnectHelper connectHelper = null;
 	private WiFiConnect wifiActivity = null;
+	private ProgressDialog progressDialog = null;
+	private boolean isConnected = false;
 	
-	public MyConnectOnClickListener(WiFiConnect wifiActivity, WifiManager wifimanager, ConnectHelper connectHelper) {
+	public MyConnectOnClickListener(WiFiConnect wifiActivity, WifiManager wifimanager, ConnectHelper connectHelper, ProgressDialog progressDialog) {
 		this.wifimanager = wifimanager;
 		this.connectHelper = connectHelper;
 		this.wifiActivity = wifiActivity;
+		this.progressDialog = progressDialog;
 	}
 	
-	@Override
 	public void onClick(View v) {
-		if(this.wifimanager.isWifiEnabled() == false) {
+
+	    if(this.wifimanager.isWifiEnabled() == false) {
 			this.wifiActivity.setLogMessage(errorMessages.WIFI_TURNED_OFF);
 		}
 		else {
 			if(this.wifiActivity.getNetworkID().getText().toString().
 					compareToIgnoreCase((this.wifimanager.getConnectionInfo().getSSID())) == 0) {
-				if(this.connectHelper.isLoggedInToSAP() == false) {
+
+				progressDialog = ProgressDialog.show(wifiActivity, "Working..", "Connecting...", true,
+		                false);
+
+				IsLoggedInProgress isLoggedInProgress = new IsLoggedInProgress(wifiActivity, progressDialog, connectHelper);
+				Thread t = new Thread(isLoggedInProgress);
+		        t.start();
+		        try {
+					t.join();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			    if(isLoggedInProgress.isLoggedIn() == false) {
 					this.wifiActivity.setStatusText("");
 					//show();
 					if(this.connectHelper.isLoginDataExist() == true && this.connectHelper.isLoginDataChanged() == false){
@@ -50,6 +69,8 @@ public class MyConnectOnClickListener implements View.OnClickListener {
 							this.wifiActivity.getPassEditText().getText().toString(), 
 							this.wifiActivity.getNetworkID().getText().toString());
 				}
+				// try to delete "isLoggedInProgress" instance from memory
+			    isLoggedInProgress = null;
 			}
 			else {
 				this.wifiActivity.setLogMessage(errorMessages.NOT_CORRECT_WIFI);
