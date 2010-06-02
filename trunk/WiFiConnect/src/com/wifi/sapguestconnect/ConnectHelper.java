@@ -19,6 +19,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.wifi.sapguestconnect.ErrorMessages.errorMessages;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.SQLException;
 import android.net.wifi.WifiInfo;
@@ -31,7 +32,8 @@ public class ConnectHelper {
 	private Context context;
     private LoginData loginData = new LoginData();
     private boolean isLoginDataChanged = false;
-    
+	ProgressDialog progressDialog = null;
+
 	boolean isLoginDataChanged() {
 		return isLoginDataChanged;
 	}
@@ -123,9 +125,53 @@ public class ConnectHelper {
 		myDbHelper.close();
 	}
 
+//	void ProgressBarDialog(Context context, boolean toShowDialog){
+//		ProgressDialog progressDialog = null;
+//		if(toShowDialog == true){
+//			progressDialog = new ProgressDialog(context);
+//			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+//			progressDialog.setMessage("Please wait...");
+//			progressDialog.setCancelable(false);
+//		}
+//		else{
+//			progressDialog.dismiss();
+//		}
+//	}
+	
+	boolean isLoggedInToSAPWithProgress(){
+		boolean isLoggedIn = false;
+
+		progressDialog = new ProgressDialog(context);
+		progressDialog.setCancelable(true);
+		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		progressDialog.setMessage("Connecting ...");
+		progressDialog.setTitle("Please wait...");
+		progressDialog.setIndeterminate(true);
+		progressDialog.show();
+		//progressDialog = ProgressDialog.show(context, "Please wait...", "Connecting ...", true, true);
+		
+		new Thread() {
+            public void run() {
+                try{
+                    // Do some Fake-Work
+		        	sleep(5000);
+		        }
+	            catch (Exception e) 
+	            { 
+	            	
+	            }
+	            // Dismiss the Dialog
+	            progressDialog.dismiss();
+            }
+		}.start();
+		
+		return isLoggedIn;
+	}
+	
 	boolean isLoggedInToSAP(){
-        if(ifWifiEnabled() == true){
-            String connUrl = "https://www.google.com";
+		boolean isLoggedInToSAP = false; 
+		if(ifWifiEnabled() == true){
+			String connUrl = "https://www.google.com";
             
 	        HttpGet getMethod=new HttpGet(connUrl);
 	        
@@ -134,13 +180,13 @@ public class ConnectHelper {
 	        	ResponseHandler<String> responseHandler=tmpHandler;
 	        	HttpClient httpclient = new DefaultHttpClient();
 	        	httpclient.execute(getMethod, responseHandler);
-	        	return tmpHandler.getStatus() == 200;
+	        	isLoggedInToSAP = (tmpHandler.getStatus() == 200);
 	        }
 	        catch (Throwable t) {
 	        	String errorMessage = t.getMessage();
 	        }
         }
-		return false;
+		return isLoggedInToSAP;
 	}
 	
 	errorMessages loginToSAPWiFi(){
