@@ -52,6 +52,10 @@ public class WiFiConnect extends Activity {
 //		super.onPause();
 //    }
 
+	public void onDialog(){
+		int i = 0;
+	}
+	
 	@Override
     public void onResume()
     {
@@ -85,12 +89,12 @@ public class WiFiConnect extends Activity {
 			IsLoggedInProgress isLoggedInProgress = new IsLoggedInProgress(this, progressDialog, connectHelper);
 			Thread t = new Thread(isLoggedInProgress);
 	        t.start();
-	        try {
-				t.join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//	        try {
+//				t.join();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			
 			if(isLoggedInProgress.isLoggedIn()) {
 				this.setLogMessage(errorMessages.ALREADY_CONNECTED);
