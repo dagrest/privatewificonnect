@@ -49,25 +49,27 @@ public class MyConnectOnClickListener implements View.OnClickListener{
 					e.printStackTrace();
 				}
 				
+				String user = this.wifiActivity.getUserEditText().getText().toString();
+				String pass = this.wifiActivity.getPassEditText().getText().toString();
+				String ssid = this.wifiActivity.getNetworkID().getText().toString();
+				
 			    if(isLoggedInProgress.isLoggedIn() == false) {
 					this.wifiActivity.setStatusText("");
+
 					//show();
-					if(this.connectHelper.isLoginDataExist() == true && this.connectHelper.isLoginDataChanged() == false){
-						this.wifiActivity.setLogMessage(connectHelper.loginToSAPWiFi());
+					if(this.connectHelper.isLoginDataExist(user, pass, ssid) == true && 
+						this.connectHelper.isLoginDataChanged() == false){
+							this.wifiActivity.setLogMessage(connectHelper.loginToSAPWiFi());
 					}
 					else{
-						this.connectHelper.saveLoginData(this.wifiActivity.getUserEditText().getText().toString(), 
-								this.wifiActivity.getPassEditText().getText().toString(), 
-								this.wifiActivity.getNetworkID().getText().toString());
+						this.connectHelper.saveLoginData(user, pass, ssid);
 						this.wifiActivity.fillLoginDataDialog();
 						this.wifiActivity.setLogMessage(this.connectHelper.loginToSAPWiFi());
 					}
 				}
 				else{
 					this.wifiActivity.setLogMessage(errorMessages.ALREADY_CONNECTED);
-					this.connectHelper.saveLoginData(this.wifiActivity.getUserEditText().getText().toString(), 
-							this.wifiActivity.getPassEditText().getText().toString(), 
-							this.wifiActivity.getNetworkID().getText().toString());
+					this.connectHelper.saveLoginData(user, pass, ssid);
 				}
 				// try to delete "isLoggedInProgress" instance from memory
 			    isLoggedInProgress = null;

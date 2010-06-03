@@ -53,9 +53,12 @@ public class ConnectHelper {
     	this.wm = wm;
     }
     
-    boolean isLoginDataExist(){
+    boolean isLoginDataExist(final String user, final String pass, final String ssid){
 		if(loginData.getUser() != null && loginData.getPass() != null && loginData.getSSID() != null &&
-		   loginData.getUser() != "" && loginData.getPass() != "" && loginData.getSSID() != ""){
+		   loginData.getUser() != "" && loginData.getPass() != "" && loginData.getSSID() != "" &&
+		   loginData.getUser().equals(user) && 
+		   loginData.getPass().equals(pass) && 
+		   loginData.getSSID().equals(ssid)){
 			return true;
 		}
 		return false;
