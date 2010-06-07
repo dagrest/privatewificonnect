@@ -1,6 +1,7 @@
 package com.wifi.sapguestconnect;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 
@@ -19,12 +20,21 @@ public class MessagesHandler extends Handler {
 	@Override
 	public void handleMessage(Message msg){
 		super.handleMessage(msg);
-		progressDialog.dismiss();
-		if(msg.what == 1){
-			wifiActivity.setLogMessage(errorMessages.ALREADY_CONNECTED);
-		}else{
-			wifiActivity.setLogMessage(errorMessages.NOT_CONNECTED);
+		switch (msg.what) {
+			case 0: wifiActivity.setLogMessage(errorMessages.NOT_CONNECTED);
+					break;
+			case 1: wifiActivity.setLogMessage(errorMessages.ALREADY_CONNECTED);
+					break;
+			case 2: wifiActivity.setLogMessage(errorMessages.SUCCESS);
+					break;
+			case 3: wifiActivity.setLogMessage(errorMessages.FAILED);
+					break;
+			case 4: wifiActivity.setLogMessage(errorMessages.WIFI_TURNED_OFF);
+					break;
+			case 5: wifiActivity.setLogMessage(errorMessages.NOT_CORRECT_WIFI);
+					break;
 		}
+		progressDialog.dismiss();
 	}
 }
 
