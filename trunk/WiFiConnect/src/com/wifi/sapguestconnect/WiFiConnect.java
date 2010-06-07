@@ -68,12 +68,6 @@ public class WiFiConnect extends Activity {
 			Thread t = new Thread(isLoggedInProgress);
 	        t.start();
 			
-//			if(isLoggedInProgress.isLoggedIn()) {
-//				this.setLogMessage(errorMessages.ALREADY_CONNECTED);
-//			}
-//			else{
-//				this.setLogMessage(errorMessages.NOT_CONNECTED);
-//			}
 			// try to delete "isLoggedInProgress" instance from memory
 		    isLoggedInProgress = null;
 		}
