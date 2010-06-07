@@ -29,7 +29,7 @@ public class MyConnectOnClickListener implements View.OnClickListener{
 			if(this.wifiActivity.getNetworkID().getText().toString().
 					compareToIgnoreCase((this.wifimanager.getConnectionInfo().getSSID())) == 0) {
 
-				progressDialog = ProgressDialog.show(wifiActivity, "Working..", "Connecting...", true,
+				progressDialog = ProgressDialog.show(wifiActivity, "Please wait...", "Connecting...", true,
 		                false);
 
 				MessagesHandler handler = new MessagesHandler(progressDialog, wifiActivity);
@@ -38,35 +38,7 @@ public class MyConnectOnClickListener implements View.OnClickListener{
 				Thread t = new Thread(connectToWiFi);
 		        t.start();
 				
-//				String user = this.wifiActivity.getUserEditText().getText().toString();
-//				String pass = this.wifiActivity.getPassEditText().getText().toString();
-//				String ssid = this.wifiActivity.getNetworkID().getText().toString();
 				this.wifiActivity.setStatusText("");
-				
-
-//				if(isLoggedInProgress.isLoggedIn() == false) {
-//					//show();
-//					if(this.connectHelper.isLoginDataExist(user, pass, ssid) == false){
-//						this.connectHelper.saveLoginData(user, pass, ssid);
-//						this.wifiActivity.fillLoginDataDialog();
-//					}
-//					
-//					if(this.connectHelper.isLoginDataExist(user, pass, ssid) == true && 
-//						this.connectHelper.isLoginDataChanged() == false){
-//						this.wifiActivity.setLogMessage(connectHelper.loginToSAPWiFi());
-//					}
-//					else{
-//						this.connectHelper.saveLoginData(user, pass, ssid);
-//						this.wifiActivity.fillLoginDataDialog();
-//						this.wifiActivity.setLogMessage(this.connectHelper.loginToSAPWiFi());
-//					}
-//				}
-//				else{
-//					this.wifiActivity.setLogMessage(errorMessages.ALREADY_CONNECTED);
-//					this.connectHelper.saveLoginData(user, pass, ssid);
-//				}
-				// try to delete "isLoggedInProgress" instance from memory
-//			    isLoggedInProgress = null;
 			}
 			else {
 				this.wifiActivity.setLogMessage(errorMessages.NOT_CORRECT_WIFI);
