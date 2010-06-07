@@ -7,22 +7,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Layout;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 public class WiFiConnect extends Activity {
@@ -52,20 +45,10 @@ public class WiFiConnect extends Activity {
 //		super.onPause();
 //    }
 
-	public void onDialog(){
-		int i = 0;
-	}
-	
 	@Override
     public void onResume()
     {
 		super.onResume();
-		
-//		Window w = this.getWindow();
-//		LayoutInflater li = w.getLayoutInflater();
-//		li.
-//		View v = w.getCurrentFocus();
-//		v.invalidate();
 		
         if(! wm.isWifiEnabled()) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -83,25 +66,19 @@ public class WiFiConnect extends Activity {
 			progressDialog = ProgressDialog.show(this, "Working..", "Connecting...", true,
                     false);
 			boolean b = progressDialog.isShowing();
-			//this.populateUI();
 			View v = findViewById(R.id.mainLayout);
 			v.invalidate();
-			IsLoggedInProgress isLoggedInProgress = new IsLoggedInProgress(this, progressDialog, connectHelper);
+			MessagesHandler handler = new MessagesHandler(progressDialog, this);
+			IsLoggedInProgress isLoggedInProgress = new IsLoggedInProgress(this, progressDialog, connectHelper, handler);
 			Thread t = new Thread(isLoggedInProgress);
 	        t.start();
-//	        try {
-//				t.join();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 			
-			if(isLoggedInProgress.isLoggedIn()) {
-				this.setLogMessage(errorMessages.ALREADY_CONNECTED);
-			}
-			else{
-				this.setLogMessage(errorMessages.NOT_CONNECTED);
-			}
+//			if(isLoggedInProgress.isLoggedIn()) {
+//				this.setLogMessage(errorMessages.ALREADY_CONNECTED);
+//			}
+//			else{
+//				this.setLogMessage(errorMessages.NOT_CONNECTED);
+//			}
 			// try to delete "isLoggedInProgress" instance from memory
 		    isLoggedInProgress = null;
 		}
@@ -133,42 +110,11 @@ public class WiFiConnect extends Activity {
 		
 		selectNetworkBtn.setOnClickListener(new SelectNetworkListener(wm, this));
 		//ssidSpinner.setOnItemSelectedListener(new MyOnItemSelectedListener(connectHelper));
+
+		//
+		// Here were actions that were removed to onResume() action
+        //
 		
-//		if(! wm.isWifiEnabled()) {
-//			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//			builder.setMessage("WiFi is disabled, please enable it and start application again")
-//			       .setCancelable(false)
-//			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//			           public void onClick(DialogInterface dialog, int id) {
-//			        	   WiFiConnect.this.finish();
-//			           }
-//			       });	     
-//			AlertDialog alert = builder.create();
-//			alert.show();
-//		}
-//		else{
-//			progressDialog = ProgressDialog.show(this, "Working..", "Connecting...", true,
-//                    false);
-//
-//			IsLoggedInProgress isLoggedInProgressDialog = new IsLoggedInProgress(this, progressDialog, connectHelper);
-//			Thread t = new Thread(isLoggedInProgressDialog);
-//	        t.start();
-//	        try {
-//				t.join();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			
-//			//isConnected = connectHelper.isLoggedInToSAP();
-//			if(isLoggedInProgressDialog.isLoggedIn()) {
-//				this.setLogMessage(errorMessages.ALREADY_CONNECTED);
-//			}
-//			else{
-//				this.setLogMessage(errorMessages.NOT_CONNECTED);
-//			}
-//		}
-        
 		connectButton.setOnClickListener(new MyConnectOnClickListener(this, wm, connectHelper, progressDialog));
 		
 		userEditText.addTextChangedListener(new TextWatcher() {
@@ -231,6 +177,7 @@ public class WiFiConnect extends Activity {
 	
 	void setNetworkID(final String networkID) {
 		this.networkID.setText(networkID);
+		connectHelper.setLoginDataChanged(true);
 	}
 	
 	// Convert and set error message according to error code
@@ -281,7 +228,7 @@ public class WiFiConnect extends Activity {
 		setValue(userEditText, loginData.getUser());
 		setValue(passEditText, loginData.getPass());
 		setValue(networkID, loginData.getSSID());
-		//setValue(statusText, "");
+		setValue(statusText, "");
 		connectHelper.setLoginDataChanged(false);
 	}
 }
