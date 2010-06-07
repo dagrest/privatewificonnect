@@ -34,20 +34,26 @@ public class MyConnectOnClickListener implements View.OnClickListener{
 
 				MessagesHandler handler = new MessagesHandler(progressDialog, wifiActivity);
 
-				IsLoggedInProgress isLoggedInProgress = new IsLoggedInProgress(wifiActivity, progressDialog, connectHelper, handler);
-				Thread t = new Thread(isLoggedInProgress);
+				ConnectToWiFi connectToWiFi = new ConnectToWiFi(wifiActivity, progressDialog, connectHelper, handler);
+				Thread t = new Thread(connectToWiFi);
 		        t.start();
 				
-				String user = this.wifiActivity.getUserEditText().getText().toString();
-				String pass = this.wifiActivity.getPassEditText().getText().toString();
-				String ssid = this.wifiActivity.getNetworkID().getText().toString();
+//				String user = this.wifiActivity.getUserEditText().getText().toString();
+//				String pass = this.wifiActivity.getPassEditText().getText().toString();
+//				String ssid = this.wifiActivity.getNetworkID().getText().toString();
 				this.wifiActivity.setStatusText("");
 				
-//			    if(isLoggedInProgress.isLoggedIn() == false) {
+
+//				if(isLoggedInProgress.isLoggedIn() == false) {
 //					//show();
+//					if(this.connectHelper.isLoginDataExist(user, pass, ssid) == false){
+//						this.connectHelper.saveLoginData(user, pass, ssid);
+//						this.wifiActivity.fillLoginDataDialog();
+//					}
+//					
 //					if(this.connectHelper.isLoginDataExist(user, pass, ssid) == true && 
 //						this.connectHelper.isLoginDataChanged() == false){
-//							this.wifiActivity.setLogMessage(connectHelper.loginToSAPWiFi());
+//						this.wifiActivity.setLogMessage(connectHelper.loginToSAPWiFi());
 //					}
 //					else{
 //						this.connectHelper.saveLoginData(user, pass, ssid);
@@ -59,12 +65,8 @@ public class MyConnectOnClickListener implements View.OnClickListener{
 //					this.wifiActivity.setLogMessage(errorMessages.ALREADY_CONNECTED);
 //					this.connectHelper.saveLoginData(user, pass, ssid);
 //				}
-				if(this.connectHelper.isLoginDataChanged() == true){
-					this.connectHelper.saveLoginData(user, pass, ssid);
-					this.wifiActivity.fillLoginDataDialog();
-				}
 				// try to delete "isLoggedInProgress" instance from memory
-			    isLoggedInProgress = null;
+//			    isLoggedInProgress = null;
 			}
 			else {
 				this.wifiActivity.setLogMessage(errorMessages.NOT_CORRECT_WIFI);

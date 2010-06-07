@@ -87,7 +87,7 @@ public class ConnectHelper {
 		loginData.setPass(pass);
 		loginData.setSSID(netID);
 
-		long res = myDbHelper.saveLoginInformation(MY_DATABASE_TABLE, loginData.getUser(), loginData.getPass(), loginData.getSSID());
+		myDbHelper.saveLoginInformation(MY_DATABASE_TABLE, loginData.getUser(), loginData.getPass(), loginData.getSSID());
 		loginData = myDbHelper.getLoginData(MY_DATABASE_TABLE);
 		
 		isLoginDataChanged = false;
@@ -186,6 +186,7 @@ public class ConnectHelper {
 	        	isLoggedInToSAP = (tmpHandler.getStatus() == 200);
 	        }
 	        catch (Throwable t) {
+	        	//TODO save error message to log
 	        	String errorMessage = t.getMessage();
 	        }
         }
@@ -193,7 +194,6 @@ public class ConnectHelper {
 	}
 	
 	errorMessages loginToSAPWiFi(){
-		boolean isLoginSucceeded = false;
         if(ifWifiEnabled() == true){
             String macAddress = getMacAddress();
             String ipAddress = getIPAddress();
@@ -205,9 +205,7 @@ public class ConnectHelper {
     	        HttpsURLConnection httpsConnection = openConnectionToHTTPS(connUrl);
     	        logInToWiFi(httpsConnection);
     	        if(isLoggedIn(httpsConnection)){
-    	        	//TODO show message login succeeded
-    	        	isLoginSucceeded = true;
-    	        	//setValue(statusText, "Logged in successfully.");
+    	        	//show message login succeeded
     	        	return errorMessages.SUCCESS;
     	        }
     	        else{
@@ -218,9 +216,7 @@ public class ConnectHelper {
     	        }
             }
             else{
-            	//TODO show message that it is not SAP WiFi currently connected
-            	isLoginSucceeded = false;
-            	//setValue(statusText, "Logged in successfully.");
+            	//show message that it is not SAP WiFi currently connected
             	return errorMessages.NOT_CORRECT_WIFI;
             }
         }
@@ -289,7 +285,7 @@ public class ConnectHelper {
 		}
 		catch(Exception e)
 		{
-			String errorMessage = e.getMessage();
+			//String errorMessage = e.getMessage();
 			//TODO write to Android LOG
 		}
 		return httpsConnection;

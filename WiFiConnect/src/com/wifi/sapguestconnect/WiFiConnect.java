@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,7 +25,6 @@ public class WiFiConnect extends Activity {
     private TextView statusText;
     private Button connectButton;
     private ConnectHelper connectHelper;
-    private errorMessages errorCode;
     private TextView networkID = null;
     private ProgressDialog progressDialog;
     boolean isConnected = false;
@@ -63,11 +61,8 @@ public class WiFiConnect extends Activity {
 			alert.show();
 		}
 		else{
-			progressDialog = ProgressDialog.show(this, "Working..", "Connecting...", true,
+			progressDialog = ProgressDialog.show(this, "Please wait...", "Checking connection state...", true,
                     false);
-			boolean b = progressDialog.isShowing();
-			View v = findViewById(R.id.mainLayout);
-			v.invalidate();
 			MessagesHandler handler = new MessagesHandler(progressDialog, this);
 			IsLoggedInProgress isLoggedInProgress = new IsLoggedInProgress(this, progressDialog, connectHelper, handler);
 			Thread t = new Thread(isLoggedInProgress);
@@ -182,24 +177,19 @@ public class WiFiConnect extends Activity {
 	
 	// Convert and set error message according to error code
 	void setLogMessage(errorMessages errorCode){
-		this.errorCode = errorCode;
-		if(errorCode == errorMessages.SUCCESS){
-			setValue(statusText, Color.GREEN,"Logged in successfully");
-		}
-		else if(errorCode == errorMessages.FAILED){
-			setValue(statusText, Color.RED ,"Login failed");
-		}
-		else if(errorCode == errorMessages.WIFI_TURNED_OFF){
-			setValue(statusText, Color.RED, "WiFi is turned off");
-		}
-		else if(errorCode == errorMessages.NOT_CORRECT_WIFI){
-			setValue(statusText, Color.RED, "Connect to the correct WiFi");
-		}
-		else if(errorCode == errorMessages.ALREADY_CONNECTED){
-			setValue(statusText, Color.GREEN, "Already connected");
-		}
-		else if(errorCode == errorMessages.NOT_CONNECTED){
-			setValue(statusText, Color.YELLOW, "Not connected");
+		switch (errorCode) {
+		case NOT_CONNECTED: 	setValue(statusText, Color.YELLOW, "Not connected");
+								break;
+    	case ALREADY_CONNECTED: setValue(statusText, Color.GREEN, "Already connected");
+    							break;
+	    case SUCCESS: 			setValue(statusText, Color.GREEN, "Logged in successfully");
+	                   			break;
+	    case FAILED: 			setValue(statusText, Color.RED ,"Login failed");		
+	    						break;
+	    case WIFI_TURNED_OFF: 	setValue(statusText, Color.RED, "WiFi is turned off");
+	                    		break;
+	    case NOT_CORRECT_WIFI: 	setValue(statusText, Color.RED, "Connect to the correct WiFi");
+								break;
 		}
 	}
 	
