@@ -33,7 +33,16 @@ public class ConnectHelper {
     private LoginData loginData = new LoginData();
     private boolean isLoginDataChanged = false;
 	ProgressDialog progressDialog = null;
-
+	private LogHelper logHelper;
+	private boolean isLogEnabled;
+	
+    ConnectHelper(final Context context, final WifiManager wm){
+    	this.context = context;
+    	this.wm = wm;
+    	logHelper = LogHelper.getLog();
+    	isLogEnabled = true;
+    }
+    
 	boolean isLoginDataChanged() {
 		return isLoginDataChanged;
 	}
@@ -48,11 +57,6 @@ public class ConnectHelper {
 
 	private WifiManager wm = null;
 
-    ConnectHelper(final Context context, final WifiManager wm){
-    	this.context = context;
-    	this.wm = wm;
-    }
-    
     boolean isLoginDataExist(final String user, final String pass, final String ssid){
 		if(loginData.getUser() != null && loginData.getPass() != null && loginData.getSSID() != null &&
 		   loginData.getUser() != "" && loginData.getPass() != "" && loginData.getSSID() != "" &&
@@ -69,6 +73,7 @@ public class ConnectHelper {
     }
     
 	void saveLoginData(final String user, final String pass, final String netID){
+    	logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() started.");
 		DataBaseHelper myDbHelper = new DataBaseHelper(context);
 		try {
 				myDbHelper.createDataBase();
@@ -92,9 +97,11 @@ public class ConnectHelper {
 		
 		isLoginDataChanged = false;
 		myDbHelper.close();
+    	logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() ended.");
 	}
 
 	void LoadLoginData(){
+    	logHelper.toLog(isLogEnabled, "ConnectHelper -> LoadLoginData() started.");
 		DataBaseHelper myDbHelper = new DataBaseHelper(context);
 		try {
 				Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' before 'createDataBase' ...");
@@ -102,6 +109,7 @@ public class ConnectHelper {
 				Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' after 'createDataBase' ...");
 		} catch (IOException ioe) {
 			//TODO show message login failed
+        	logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> LoadLoginData(): Unable to create database");
 			throw new Error("Unable to create database");
 		}
 		try {
@@ -110,6 +118,7 @@ public class ConnectHelper {
 			Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' after 'openDataBase' ...");
 		} catch (SQLException sqle) {
 			//TODO show message login failed
+        	logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> LoadLoginData(): login failed!");
 			throw sqle;
 		}
 		
@@ -126,7 +135,8 @@ public class ConnectHelper {
 //		}
 		
 		myDbHelper.close();
-	}
+    	logHelper.toLog(isLogEnabled, "ConnectHelper -> LoadLoginData() ended.");
+    }
 
 //	void ProgressBarDialog(Context context, boolean toShowDialog){
 //		ProgressDialog progressDialog = null;
@@ -142,7 +152,8 @@ public class ConnectHelper {
 //	}
 	
 	boolean isLoggedInToSAPWithProgress(){
-		boolean isLoggedIn = false;
+    	logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedInToSAPWithProgress() started.");
+    	boolean isLoggedIn = false;
 
 		progressDialog = new ProgressDialog(context);
 		progressDialog.setCancelable(true);
@@ -168,10 +179,12 @@ public class ConnectHelper {
             }
 		}.start();
 		
+    	logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedInToSAPWithProgress() ended.");
 		return isLoggedIn;
 	}
 	
 	boolean isLoggedInToSAP(){
+    	logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedInToSAP() started.");
 		boolean isLoggedInToSAP = false; 
 		if(ifWifiEnabled() == true){
 			String connUrl = "https://www.google.com";
@@ -186,15 +199,16 @@ public class ConnectHelper {
 	        	isLoggedInToSAP = (tmpHandler.getStatus() == 200);
 	        }
 	        catch (Throwable t) {
-	        	//TODO save error message to log
-	        	String errorMessage = t.getMessage();
+	        	logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> isLoggedInToSAP(): " + t.getMessage());
 	        }
         }
+    	logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedInToSAP() ended.");
 		return isLoggedInToSAP;
 	}
 	
 	errorMessages loginToSAPWiFi(){
-        if(ifWifiEnabled() == true){
+    	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() started.");
+    	if(ifWifiEnabled() == true){
             String macAddress = getMacAddress();
             String ipAddress = getIPAddress();
             // "https://wlan.sap.com/cgi-bin/login?cmd=login&mac=00:18:de:14:20:91&ip=192.168.143.135&essid=SAP-Guest&url=http%3A%2F%2Fwww%2Egoogle%2Ecom%2F";
@@ -206,29 +220,34 @@ public class ConnectHelper {
     	        logInToWiFi(httpsConnection);
     	        if(isLoggedIn(httpsConnection)){
     	        	//show message login succeeded
+    	        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
     	        	return errorMessages.SUCCESS;
     	        }
     	        else{
     	        	//TODO show message login failed
     	        	//statusText.setTextColor(0xFF000000);
     	        	//setValue(statusText, "Login FAILED.");
+    	        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
     	        	return errorMessages.FAILED;
     	        }
             }
             else{
             	//show message that it is not SAP WiFi currently connected
+	        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
             	return errorMessages.NOT_CORRECT_WIFI;
             }
         }
         else{
         	//TODO show message that WiFi turned off
         	//setValue(statusText, "WiFI is turned off.");
+        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
         	return errorMessages.WIFI_TURNED_OFF;
         }
 	}
 	
-	 HttpsURLConnection openConnectionToHTTPS(String connUrl)
+	HttpsURLConnection openConnectionToHTTPS(String connUrl)
 	{
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> openConnectionToHTTPS() started.");
 		HttpsURLConnection httpsConnection = null;
 		try {
 			// Trust every server - dont check for any certificate 
@@ -288,6 +307,7 @@ public class ConnectHelper {
 			//String errorMessage = e.getMessage();
 			//TODO write to Android LOG
 		}
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> openConnectionToHTTPS() ended.");
 		return httpsConnection;
 	}
 	//http://androidforums.com/android-applications/60650-send-data-https-android-application.html

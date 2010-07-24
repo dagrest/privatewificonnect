@@ -1,5 +1,9 @@
 package com.wifi.sapguestconnect;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import com.wifi.sapguestconnect.ErrorMessages.errorMessages;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,6 +14,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -27,8 +32,10 @@ public class WiFiConnect extends Activity {
     private ConnectHelper connectHelper;
     private TextView networkID = null;
     private ProgressDialog progressDialog;
-    boolean isConnected = false;
-    
+    private boolean isConnected = false;
+    private LogHelper logHelper;
+    private boolean isLogEnabled;
+	
 	private Button selectNetworkBtn = null;
 
 //	@Override
@@ -46,6 +53,7 @@ public class WiFiConnect extends Activity {
 	@Override
     public void onResume()
     {
+		logHelper.toLog(isLogEnabled, "WiFiConnect -> onResume() started.");
 		super.onResume();
 		
         if(! wm.isWifiEnabled()) {
@@ -71,12 +79,17 @@ public class WiFiConnect extends Activity {
 			// try to delete "isLoggedInProgress" instance from memory
 		    isLoggedInProgress = null;
 		}
+		logHelper.toLog(isLogEnabled, "WiFiConnect -> onResume() ended.");
     }	
 	
     /** Called with the activity is first created. */
 	@Override
     public void onCreate(Bundle icicle)
     {
+		logHelper = LogHelper.getLog();
+		isLogEnabled = true;
+		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() started.");
+
         super.onCreate(icicle);
         Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'onCreate' function started...");
         setContentView(R.layout.main);
@@ -92,19 +105,25 @@ public class WiFiConnect extends Activity {
         networkID = (TextView)findViewById(R.id.NetworkIDText);
         
 		if (wm == null) {
+			logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> getSystemService() started.");
 			wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+			logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> getSystemService() ended.");
 		}
 		
 		connectHelper = new ConnectHelper(this, wm);
 		
+		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> setOnClickListener() started.");
 		selectNetworkBtn.setOnClickListener(new SelectNetworkListener(wm, this));
+		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> setOnClickListener() ended.");
 		//ssidSpinner.setOnItemSelectedListener(new MyOnItemSelectedListener(connectHelper));
 
 		//
 		// Here were actions that were removed to onResume() action
         //
 		
+		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> MyConnectOnClickListener() started.");
 		connectButton.setOnClickListener(new MyConnectOnClickListener(this, wm, connectHelper, progressDialog));
+		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> MyConnectOnClickListener() ended.");
 		
 		userEditText.addTextChangedListener(new TextWatcher() {
 			public void afterTextChanged(Editable s) {
@@ -122,6 +141,23 @@ public class WiFiConnect extends Activity {
 			}
 		});
 
+//		Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+//		    @Override
+//		    public void uncaughtException(Thread thread, Throwable ex) {
+//
+//		    PrintWriter pw;
+//		    try {
+//		        pw = new PrintWriter(
+//		                new FileWriter(Environment.getExternalStorageDirectory()+"/rt.log", true));
+//		        ex.printStackTrace(pw);
+//		        pw.flush();
+//		        pw.close();
+//		    } catch (IOException e) {
+//		        e.printStackTrace();
+//		    }
+//		}
+//		});
+		
 		passEditText.addTextChangedListener(new TextWatcher() {
 			public void afterTextChanged(Editable s) {
 				connectHelper.setLoginDataChanged(true);
@@ -141,6 +177,7 @@ public class WiFiConnect extends Activity {
 		// Get login data from DB 
 		connectHelper.LoadLoginData();
 		fillLoginDataDialog();
+		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() ended.");
     } // on Create()
 
 	EditText getUserEditText() {

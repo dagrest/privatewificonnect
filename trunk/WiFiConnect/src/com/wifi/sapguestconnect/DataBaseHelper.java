@@ -1,10 +1,6 @@
 package com.wifi.sapguestconnect;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -18,12 +14,11 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 	 
     //The Android's default system path of your application database.
     private static String DB_PATH = "/data/data/com.wifi.sapguestconnect/databases/";
- 
     private static String DB_NAME = "WiFiLoginDB";
- 
     private SQLiteDatabase myDataBase; 
- 
     private final Context myContext;
+    private LogHelper logHelper;
+    private boolean isLogEnabled;
  
     /**
      * Constructor
@@ -34,9 +29,12 @@ public class DataBaseHelper extends SQLiteOpenHelper{
  
     	super(context, DB_NAME, null, 1);
         this.myContext = context;
+        logHelper = LogHelper.getLog();
+        isLogEnabled = true;
     }	
  
     public boolean isTableExist(String table){
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> isTableExist() started.");
     	boolean isTableExist = false;
     	String sqlIsTableExistStmt = "SELECT name FROM sqlite_master WHERE name='" + table + "' AND type='table'";
     	
@@ -52,14 +50,15 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 //    		}
     	}
     	catch (SQLException e) {
-    		//TODO error message to log
-    		String errorMessage = e.getMessage();
+        	logHelper.toLog(isLogEnabled, "EXCEPTION: DataBaseHelper -> isTableExist(): " + e.getMessage());
     	}
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> isTableExist() ended.");
     	return isTableExist;
     }
     
     public long saveLoginInformation(String table, String user, String pass, String bssID) {
-    	
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> saveLoginInformation() started.");
+   	
     	String sqlDropTable = "DROP TABLE IF EXISTS " + table;
     	String sqlCreateStmt = "CREATE TABLE " + table + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, user TEXT, pass TEXT, bssid TEXT);";
 
@@ -69,9 +68,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 	    		myDataBase.execSQL(sqlDropTable);
 	    	}
 	    	catch(SQLException e){
-	    		//TODO error message to log
-	    		String errorMessage = e.getMessage();
-	    		int i = 0;
+	        	logHelper.toLog(isLogEnabled, "EXCEPTION: DataBaseHelper -> saveLoginInformation() [sqlDropTable]: " + e.getMessage());
 	    	}
     	}
     	if(isTableExist(table) == false){
@@ -81,9 +78,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 	    		}
 	    	}
 	    	catch(SQLException e){
-	    		//TODO error message to log
-	    		String errorMessage = e.getMessage();
-	    		int i = 0;
+	        	logHelper.toLog(isLogEnabled, "EXCEPTION: DataBaseHelper -> saveLoginInformation() [sqlCreateStmt]: " + e.getMessage());
 	    	}
     	}
 
@@ -96,11 +91,10 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         try {
         	queryResult = myDataBase.insert(table, "title", initialValues);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			String errorMessage = e.getMessage();
-			int i = 0;
+			logHelper.toLog(isLogEnabled, "EXCEPTION: DataBaseHelper -> saveLoginInformation() [insert]: " + e.getMessage());
 		}
+
+		logHelper.toLog(isLogEnabled, "DataBaseHelper -> saveLoginInformation() ended.");
         
         return queryResult;
     }
@@ -110,6 +104,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     	String pass = null;
     	String bssID = null;
     	
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> getLoginData() started.");
     	String sqlIsTableExistStmt = "SELECT * FROM " + table;// + " WHERE _id='5'";
     	
     	try { 
@@ -129,10 +124,10 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     	}
     	catch (SQLException e) {
     		//TODO error message to log
-    		String errorMessage = e.getMessage();
-    		int i = 1;
+    		logHelper.toLog(isLogEnabled, "EXCEPTION: DataBaseHelper -> getLoginData(): " + e.getMessage());
     	}
     	    	
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> getLoginData() ended.");
     	return new LoginData(user, pass, bssID);
     }
     
@@ -141,6 +136,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
      * */
     public void createDataBase() throws IOException{
  
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> createDataBase() started.");
 		Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'createDataBase' before 'checkDataBase' ...");
     	boolean dbExist = checkDataBase();
 		Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'createDataBase' after 'checkDataBase' ...");
@@ -149,10 +145,10 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     		//do nothing - database already exist
     	}else{
  
-    		//By calling this method and empty database will be created into the default system path
-            //of your application so we are gonna be able to overwrite that database with our database.
-        	SQLiteDatabase db = this.getWritableDatabase();
-        	
+//    		//By calling this method and empty database will be created into the default system path
+//            //of your application so we are gonna be able to overwrite that database with our database.
+//        	SQLiteDatabase db = this.getWritableDatabase();
+//        	
 //        	try {
 // 
 //    			copyDataBase();
@@ -163,7 +159,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 // 
 //        	}
     	}
- 
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> createDataBase() ended.");
     }
  
     /**
@@ -171,7 +167,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
      * @return true if it exists, false if it doesn't
      */
     private boolean checkDataBase(){
- 
+    	
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> checkDataBase() started.");
+    	
     	SQLiteDatabase checkDB = null;
  
     	try{
@@ -182,10 +180,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     		Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'checkDataBase' after 'openDatabase' ...");
 
     	}catch(SQLiteException e){
- 
     		//database does't exist yet.
-    		String sss = e.getMessage();
-    		int i = 0;
+    		logHelper.toLog(isLogEnabled, "EXCEPTION: DataBaseHelper -> checkDataBase(): " + e.getMessage());
     	}
  
     	if(checkDB != null){
@@ -194,62 +190,67 @@ public class DataBaseHelper extends SQLiteOpenHelper{
  
     	}
  
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> checkDataBase() ended.");
+    	
     	return checkDB != null ? true : false;
     }
  
-    /**
-     * Copies your database from your local assets-folder to the just created empty database in the
-     * system folder, from where it can be accessed and handled.
-     * This is done by transfering bytestream.
-     * */
-    private void copyDataBase() throws IOException{
- 
-    	//Open your local db as the input stream
-    	InputStream myInput = null;
-		try {
-			myInput = myContext.getAssets().open(DB_NAME);
-		} catch (Exception e) {
-			String errorMessage = e.getMessage();
-			//e.printStackTrace();
-			int i = 0;
-		}
- 
-    	// Path to the just created empty db
-    	String outFileName = DB_PATH + DB_NAME;
- 
-    	//Open the empty db as the output stream
-    	OutputStream myOutput = new FileOutputStream(outFileName);
- 
-    	//transfer bytes from the inputfile to the outputfile
-    	byte[] buffer = new byte[1024];
-    	int length;
-    	while ((length = myInput.read(buffer))>0){
-    		myOutput.write(buffer, 0, length);
-    	}
- 
-    	//Close the streams
-    	myOutput.flush();
-    	myOutput.close();
-    	myInput.close();
- 
-    }
+//    /**
+//     * Copies your database from your local assets-folder to the just created empty database in the
+//     * system folder, from where it can be accessed and handled.
+//     * This is done by transfering bytestream.
+//     * */
+//    private void copyDataBase() throws IOException{
+//    	
+//    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> copyDataBase() started.");
+//
+//    	//Open your local db as the input stream
+//    	InputStream myInput = null;
+//		try {
+//			myInput = myContext.getAssets().open(DB_NAME);
+//		} catch (Exception e) {
+//			logHelper.toLog(isLogEnabled, "EXCEPTION: DataBaseHelper -> copyDataBase(): " + e.getMessage());
+//		}
+// 
+//    	// Path to the just created empty db
+//    	String outFileName = DB_PATH + DB_NAME;
+// 
+//    	//Open the empty db as the output stream
+//    	OutputStream myOutput = new FileOutputStream(outFileName);
+// 
+//    	//transfer bytes from the inputfile to the outputfile
+//    	byte[] buffer = new byte[1024];
+//    	int length;
+//    	while ((length = myInput.read(buffer))>0){
+//    		myOutput.write(buffer, 0, length);
+//    	}
+// 
+//    	//Close the streams
+//    	myOutput.flush();
+//    	myOutput.close();
+//    	myInput.close();
+// 
+//    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> copyDataBase() ended.");
+//
+//    }
  
     public void openDataBase() throws SQLException{
  
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> openDataBase() started.");
     	//Open the database
         String myPath = DB_PATH + DB_NAME;
     	myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
     	//return myDataBase;
-    }
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> openDataBase() ended.");
+   }
  
     @Override
 	public synchronized void close() {
- 
-    	    if(myDataBase != null)
-    		    myDataBase.close();
- 
-    	    super.close();
- 
+    	logHelper.toLog(isLogEnabled, "DataBaseHelper -> close() started.");
+   	    if(myDataBase != null)
+   		    myDataBase.close();
+   	    super.close();
+       	logHelper.toLog(isLogEnabled, "DataBaseHelper -> close() ended.");
 	}
  
 //	@Override
