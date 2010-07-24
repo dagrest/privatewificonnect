@@ -10,12 +10,16 @@ public class ConnectToWiFi implements Runnable {
 	private boolean isLoggedIn;
 	private WiFiConnect wifiActivity;
 	private MessagesHandler handler;
+	private LogHelper logHelper;
+	private boolean isLogEnabled;
 	
 	public boolean isLoggedIn() {
 		return isLoggedIn;
 	}
 
 	public ConnectToWiFi(WiFiConnect wifiActivity, final ProgressDialog progressDialog, final ConnectHelper connectHelper, MessagesHandler handler){
+		logHelper = LogHelper.getLog();
+		isLogEnabled = true;
 		this.progressDialog = progressDialog;
 		this.connectHelper = connectHelper;
 		this.wifiActivity = wifiActivity;
@@ -23,6 +27,7 @@ public class ConnectToWiFi implements Runnable {
 	}
 	
 	public void run() {
+    	logHelper.toLog(isLogEnabled, "ConnectToWiFi -> run() started.");
 		isLoggedIn = connectHelper.isLoggedInToSAP();
 
 		String user = this.wifiActivity.getUserEditText().getText().toString();
@@ -50,6 +55,7 @@ public class ConnectToWiFi implements Runnable {
 			this.connectHelper.saveLoginData(user, pass, ssid);
 			handler.sendEmptyMessage(ErrorMessages.toInt(errorMessages.ALREADY_CONNECTED));
 		}
+    	logHelper.toLog(isLogEnabled, "ConnectToWiFi -> run() ended.");
 	}
 }
 

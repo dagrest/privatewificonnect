@@ -16,6 +16,9 @@ public class SelectNetworkListener implements OnClickListener {
 	private WifiManager wifiManager = null;
 	private WiFiConnect activity = null;
 	String ssidArray[]  = null;
+	private LogHelper logHelper;
+	private boolean isLogEnabled;
+	
 	public SelectNetworkListener(WifiManager wifiManager, WiFiConnect activity) {
 		this.wifiManager = wifiManager;
 		this.activity = activity;
@@ -23,6 +26,9 @@ public class SelectNetworkListener implements OnClickListener {
 	
 	public void onClick(View v) {
 		
+		logHelper = LogHelper.getLog();
+		logHelper.toLog(isLogEnabled, "SelectNetworkListener->onClick() started.");
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		List<ScanResult> scanRes = this.wifiManager.getScanResults();
 		
@@ -47,6 +53,7 @@ public class SelectNetworkListener implements OnClickListener {
 		});
 		AlertDialog alert = builder.create();
 		alert.show();
+		logHelper.toLog(isLogEnabled, "SelectNetworkListener->onClick() ended.");
 	}
 
 }

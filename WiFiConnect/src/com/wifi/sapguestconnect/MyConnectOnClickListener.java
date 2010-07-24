@@ -12,16 +12,21 @@ public class MyConnectOnClickListener implements View.OnClickListener{
 	private ConnectHelper connectHelper = null;
 	private WiFiConnect wifiActivity = null;
 	private ProgressDialog progressDialog = null;
+	private LogHelper logHelper;
+	private boolean isLogEnabled;
 	
 	public MyConnectOnClickListener(WiFiConnect wifiActivity, WifiManager wifimanager, ConnectHelper connectHelper, ProgressDialog progressDialog) {
 		this.wifimanager = wifimanager;
 		this.connectHelper = connectHelper;
 		this.wifiActivity = wifiActivity;
 		this.progressDialog = progressDialog;
+		logHelper = LogHelper.getLog();
+		isLogEnabled = true;
 	}
 	
 	public void onClick(View v) {
 
+		logHelper.toLog(isLogEnabled, "MyConnectOnClickListener -> onClick() started.");
 	    if(this.wifimanager.isWifiEnabled() == false) {
 			this.wifiActivity.setLogMessage(errorMessages.WIFI_TURNED_OFF);
 		}
@@ -44,5 +49,6 @@ public class MyConnectOnClickListener implements View.OnClickListener{
 				this.wifiActivity.setLogMessage(errorMessages.NOT_CORRECT_WIFI);
 			}
 		}
+		logHelper.toLog(isLogEnabled, "MyConnectOnClickListener -> onClick() ended.");
 	}
 }
