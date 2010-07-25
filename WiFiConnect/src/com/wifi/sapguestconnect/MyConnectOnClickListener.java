@@ -27,27 +27,31 @@ public class MyConnectOnClickListener implements View.OnClickListener{
 	public void onClick(View v) {
 
 		logHelper.toLog(isLogEnabled, "MyConnectOnClickListener -> onClick() started.");
-	    if(this.wifimanager.isWifiEnabled() == false) {
-			this.wifiActivity.setLogMessage(errorMessages.WIFI_TURNED_OFF);
-		}
-		else {
-			if(this.wifiActivity.getNetworkID().getText().toString().
-					compareToIgnoreCase((this.wifimanager.getConnectionInfo().getSSID())) == 0) {
-
-				progressDialog = ProgressDialog.show(wifiActivity, "Please wait...", "Connecting...", true,
-		                false);
-
-				MessagesHandler handler = new MessagesHandler(progressDialog, wifiActivity);
-
-				ConnectToWiFi connectToWiFi = new ConnectToWiFi(wifiActivity, progressDialog, connectHelper, handler);
-				Thread t = new Thread(connectToWiFi);
-		        t.start();
-				
-				this.wifiActivity.setStatusText("");
+	    try {
+			if(this.wifimanager.isWifiEnabled() == false) {
+				this.wifiActivity.setLogMessage(errorMessages.WIFI_TURNED_OFF);
 			}
 			else {
-				this.wifiActivity.setLogMessage(errorMessages.NOT_CORRECT_WIFI);
+				if(this.wifiActivity.getNetworkID().getText().toString().
+						compareToIgnoreCase((this.wifimanager.getConnectionInfo().getSSID())) == 0) {
+
+					progressDialog = ProgressDialog.show(wifiActivity, "Please wait...", "Connecting...", true,
+			                false);
+
+					MessagesHandler handler = new MessagesHandler(progressDialog, wifiActivity);
+
+					ConnectToWiFi connectToWiFi = new ConnectToWiFi(wifiActivity, progressDialog, connectHelper, handler);
+					Thread t = new Thread(connectToWiFi);
+			        t.start();
+					
+					this.wifiActivity.setStatusText("");
+				}
+				else {
+					this.wifiActivity.setLogMessage(errorMessages.NOT_CORRECT_WIFI);
+				}
 			}
+		} catch (Exception e) {
+    		logHelper.toLog(isLogEnabled, "EXCEPTION: MyConnectOnClickListener -> onClick(): " + e.getMessage());
 		}
 		logHelper.toLog(isLogEnabled, "MyConnectOnClickListener -> onClick() ended.");
 	}

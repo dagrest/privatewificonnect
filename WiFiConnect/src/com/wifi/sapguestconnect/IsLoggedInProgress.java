@@ -8,6 +8,8 @@ public class IsLoggedInProgress implements Runnable {
 	private boolean isLoggedIn;
 	private WiFiConnect wifiActivity;
 	private MessagesHandler handler;
+	private LogHelper logHelper;
+	private boolean isLogEnabled;
 	
 	public boolean isLoggedIn() {
 		return isLoggedIn;
@@ -18,11 +20,16 @@ public class IsLoggedInProgress implements Runnable {
 		this.connectHelper = connectHelper;
 		this.wifiActivity = wifiActivity;
 		this.handler = handler;
+		logHelper = LogHelper.getLog();
+		isLogEnabled = true;
 	}
 	
 	public void run() {
+
+		logHelper.toLog(isLogEnabled, "IsLoggedInProgress -> run() started.");
 		isLoggedIn = connectHelper.isLoggedInToSAP();
 		handler.sendEmptyMessage((isLoggedIn)?1:0);
+		logHelper.toLog(isLogEnabled, "IsLoggedInProgress -> run() ended.");
 	}
 }
 

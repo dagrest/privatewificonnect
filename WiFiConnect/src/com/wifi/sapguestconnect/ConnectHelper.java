@@ -316,6 +316,7 @@ public class ConnectHelper {
 	//http://stackoverflow.com/questions/995514/https-connection-android
 
 	private void logInToWiFi(HttpsURLConnection httpsConnection){
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> logInToWiFi() started.");
         // add url form parameters
 		OutputStream ostream = null;
 		try {
@@ -336,9 +337,11 @@ public class ConnectHelper {
 				}
 			}
 		}
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> logInToWiFi() ended.");
 	}
 	
 	private boolean isLoggedIn(HttpsURLConnection httpsConnection){
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedIn() Started.");
 		boolean isLoggedIn = false;
 		Object contents;
 		try {
@@ -363,41 +366,48 @@ public class ConnectHelper {
 			e.printStackTrace();
 			// TODO write to Android LOG
 		}
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedIn() ended.");
 		return isLoggedIn;
 	}
 	
 	String getMacAddress() {
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> getMacAddress() stared.");
 		String mac = null;
 		if (wm != null) {
 			WifiInfo wi = wm.getConnectionInfo();
 			mac = wi.getMacAddress();
 		}
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> getMacAddress() ended.");
 
 		return mac;
 	}
 	
 	String getSSID() {
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> getSSID() started.");
 		String ssid = null;
 
 		if (wm != null) {
 			WifiInfo wi = wm.getConnectionInfo();
 			ssid = wi.getSSID();
 		}
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> getSSID() ended.");
 
 		return ssid;
 	}
 	
 	boolean ifWifiEnabled() {
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> ifWifiEnabled() started.");
 		boolean isEnabled = false;
 
 		if (wm != null) {
 			isEnabled = wm.isWifiEnabled();
 		}
-
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> ifWifiEnabled() ended.");
 		return isEnabled;
 	}
 	
 	String getIPAddress() {
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> getIPAddress() started.");		
 		String strIP = null;
 		int ip = -1;
 
@@ -420,6 +430,7 @@ public class ConnectHelper {
 			}
 			strIP = stringIP.toString();
 		}
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> getIPAddress() ended.");		
 		return strIP;
 	}
 }
