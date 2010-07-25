@@ -25,6 +25,11 @@ public class MessagesHandler extends Handler {
 	public void handleMessage(Message msg){
 		logHelper.toLog(isLogEnabled, "MessagesHandler -> handleMessage() started.");
 		super.handleMessage(msg);
+		try {
+			wifiActivity.fillLoginDataDialog();
+		} catch (Exception e) {
+			logHelper.toLog(isLogEnabled, "EXCEPTION: MessagesHandler -> handleMessage(): " + e.getMessage());
+		}
 		switch (msg.what) {
 			case 0: wifiActivity.setLogMessage(errorMessages.NOT_CONNECTED);
 					break;

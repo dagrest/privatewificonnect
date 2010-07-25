@@ -34,26 +34,30 @@ public class ConnectToWiFi implements Runnable {
 		String pass = this.wifiActivity.getPassEditText().getText().toString();
 		String ssid = this.wifiActivity.getNetworkID().getText().toString();
 
-		if(isLoggedIn() == false) {
-			//show();
-			if(this.connectHelper.isLoginDataExist(user, pass, ssid) == false){
-				this.connectHelper.saveLoginData(user, pass, ssid);
-				this.wifiActivity.fillLoginDataDialog();
-			}
-			
-			if(this.connectHelper.isLoginDataExist(user, pass, ssid) == true && 
-				this.connectHelper.isLoginDataChanged() == false){
-				handler.sendEmptyMessage(ErrorMessages.toInt(connectHelper.loginToSAPWiFi()));
+		try {
+			if(isLoggedIn() == false) {
+				//show();
+				if(this.connectHelper.isLoginDataExist(user, pass, ssid) == false){
+					this.connectHelper.saveLoginData(user, pass, ssid);
+					//this.wifiActivity.fillLoginDataDialog();
+				}
+				
+				if(this.connectHelper.isLoginDataExist(user, pass, ssid) == true && 
+					this.connectHelper.isLoginDataChanged() == false){
+					handler.sendEmptyMessage(ErrorMessages.toInt(connectHelper.loginToSAPWiFi()));
+				}
+				else{
+					this.connectHelper.saveLoginData(user, pass, ssid);
+					//this.wifiActivity.fillLoginDataDialog();
+					handler.sendEmptyMessage(ErrorMessages.toInt(connectHelper.loginToSAPWiFi()));
+				}
 			}
 			else{
 				this.connectHelper.saveLoginData(user, pass, ssid);
-				this.wifiActivity.fillLoginDataDialog();
-				handler.sendEmptyMessage(ErrorMessages.toInt(connectHelper.loginToSAPWiFi()));
+				handler.sendEmptyMessage(ErrorMessages.toInt(errorMessages.ALREADY_CONNECTED));
 			}
-		}
-		else{
-			this.connectHelper.saveLoginData(user, pass, ssid);
-			handler.sendEmptyMessage(ErrorMessages.toInt(errorMessages.ALREADY_CONNECTED));
+		} catch (Exception e) {
+    		logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectToWiFi -> run(): " + e.getMessage());
 		}
     	logHelper.toLog(isLogEnabled, "ConnectToWiFi -> run() ended.");
 	}
