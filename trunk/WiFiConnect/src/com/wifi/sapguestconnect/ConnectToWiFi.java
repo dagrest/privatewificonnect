@@ -19,7 +19,7 @@ public class ConnectToWiFi implements Runnable {
 
 	public ConnectToWiFi(WiFiConnect wifiActivity, final ProgressDialog progressDialog, final ConnectHelper connectHelper, MessagesHandler handler){
 		logHelper = LogHelper.getLog();
-		isLogEnabled = true;
+		isLogEnabled = logHelper.isLogEnabled();
 		this.progressDialog = progressDialog;
 		this.connectHelper = connectHelper;
 		this.wifiActivity = wifiActivity;

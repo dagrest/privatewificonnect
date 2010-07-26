@@ -21,7 +21,7 @@ public class MyConnectOnClickListener implements View.OnClickListener{
 		this.wifiActivity = wifiActivity;
 		this.progressDialog = progressDialog;
 		logHelper = LogHelper.getLog();
-		isLogEnabled = true;
+		isLogEnabled = logHelper.isLogEnabled();
 	}
 	
 	public void onClick(View v) {
