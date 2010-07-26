@@ -18,7 +18,7 @@ public class MessagesHandler extends Handler {
 		this.progressDialog = progressDialog;
 		this.wifiActivity = wifiActivity;
 		logHelper = LogHelper.getLog();
-		isLogEnabled = true;
+		isLogEnabled = logHelper.isLogEnabled();
 	}
 	
 	@Override

@@ -40,7 +40,7 @@ public class ConnectHelper {
     	this.context = context;
     	this.wm = wm;
     	logHelper = LogHelper.getLog();
-    	isLogEnabled = true;
+    	isLogEnabled = logHelper.isLogEnabled();
     }
     
 	boolean isLoginDataChanged() {

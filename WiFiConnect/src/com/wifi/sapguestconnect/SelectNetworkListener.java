@@ -27,6 +27,7 @@ public class SelectNetworkListener implements OnClickListener {
 	public void onClick(View v) {
 		
 		logHelper = LogHelper.getLog();
+		isLogEnabled = logHelper.isLogEnabled();
 		logHelper.toLog(isLogEnabled, "SelectNetworkListener->onClick() started.");
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);

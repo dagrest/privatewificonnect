@@ -21,7 +21,7 @@ public class IsLoggedInProgress implements Runnable {
 		this.wifiActivity = wifiActivity;
 		this.handler = handler;
 		logHelper = LogHelper.getLog();
-		isLogEnabled = true;
+		isLogEnabled = logHelper.isLogEnabled();
 	}
 	
 	public void run() {

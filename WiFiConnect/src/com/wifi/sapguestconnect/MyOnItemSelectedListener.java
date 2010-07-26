@@ -12,7 +12,7 @@ public class MyOnItemSelectedListener implements OnItemSelectedListener {
 	
 	public MyOnItemSelectedListener(ConnectHelper connectHelper) {
 		logHelper = LogHelper.getLog();
-		isLogEnabled = true;
+		isLogEnabled = logHelper.isLogEnabled();
 		this.connectHelper = connectHelper;
 	}
 	

@@ -30,7 +30,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     	super(context, DB_NAME, null, 1);
         this.myContext = context;
         logHelper = LogHelper.getLog();
-        isLogEnabled = true;
+        isLogEnabled = logHelper.isLogEnabled();
     }	
  
     public boolean isTableExist(String table){

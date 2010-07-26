@@ -87,7 +87,7 @@ public class WiFiConnect extends Activity {
     public void onCreate(Bundle icicle)
     {
 		logHelper = LogHelper.getLog();
-		isLogEnabled = true;
+		isLogEnabled = logHelper.isLogEnabled();
 		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() started.");
 
         super.onCreate(icicle);
