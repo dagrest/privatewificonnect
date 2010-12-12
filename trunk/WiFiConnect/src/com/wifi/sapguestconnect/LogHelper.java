@@ -56,7 +56,6 @@ public class LogHelper {
 		        pw.close();
 		    } catch (IOException e) {
 		    	Log.e("WiFiConnect: LogHelper->toLog", e.toString());
-		        e.printStackTrace();
 		    }
 		}
 	}
