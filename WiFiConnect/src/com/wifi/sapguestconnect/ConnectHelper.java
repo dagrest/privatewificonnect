@@ -78,13 +78,13 @@ public class ConnectHelper {
 		try {
 				myDbHelper.createDataBase();
 		} catch (IOException ioe) {
-			//TODO show message login failed
+			logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() - EXCEPTION: " + ioe.getMessage());
 			throw new Error("Unable to create database");
 		}
 		try {
 			myDbHelper.openDataBase();
 		} catch (SQLException sqle) {
-			//TODO show message login failed
+			logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() - EXCEPTION: " + sqle.getMessage());
 			throw sqle;
 		}
 		
@@ -108,8 +108,7 @@ public class ConnectHelper {
 				myDbHelper.createDataBase();
 				Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' after 'createDataBase' ...");
 		} catch (IOException ioe) {
-			//TODO show message login failed
-        	logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> LoadLoginData(): Unable to create database");
+			logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> LoadLoginData(): Unable to create database");
 			throw new Error("Unable to create database");
 		}
 		try {
@@ -117,7 +116,6 @@ public class ConnectHelper {
 			myDbHelper.openDataBase();
 			Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' after 'openDataBase' ...");
 		} catch (SQLException sqle) {
-			//TODO show message login failed
         	logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> LoadLoginData(): login failed!");
 			throw sqle;
 		}
@@ -199,7 +197,7 @@ public class ConnectHelper {
 	        	isLoggedInToSAP = (tmpHandler.getStatus() == 200);
 	        }
 	        catch (Throwable t) {
-	        	logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> isLoggedInToSAP(): " + t.getMessage());
+	        	logHelper.toLog(isLogEnabled, "INFO: ConnectHelper -> isLoggedInToSAP(): Not logged in to Guest WiFi");
 	        }
         }
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedInToSAP() ended.");
@@ -224,7 +222,7 @@ public class ConnectHelper {
     	        	return errorMessages.SUCCESS;
     	        }
     	        else{
-    	        	//TODO show message login failed
+    	        	//show message login failed
     	        	//statusText.setTextColor(0xFF000000);
     	        	//setValue(statusText, "Login FAILED.");
     	        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
@@ -238,7 +236,6 @@ public class ConnectHelper {
             }
         }
         else{
-        	//TODO show message that WiFi turned off
         	//setValue(statusText, "WiFI is turned off.");
         	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
         	return errorMessages.WIFI_TURNED_OFF;
@@ -304,8 +301,7 @@ public class ConnectHelper {
 		}
 		catch(Exception e)
 		{
-			//String errorMessage = e.getMessage();
-			//TODO write to Android LOG
+			logHelper.toLog(isLogEnabled, "ConnectHelper -> openConnectionToHTTPS() - EXCEPTION: " + e.getMessage());
 		}
 		logHelper.toLog(isLogEnabled, "ConnectHelper -> openConnectionToHTTPS() ended.");
 		return httpsConnection;
@@ -324,16 +320,14 @@ public class ConnectHelper {
 			byte[] b = ("user=" + loginData.getUser() + "&password=" + loginData.getPass() + "&cmd=authenticate&Login=Log+In").getBytes();
 			ostream.write(b);
 		} catch (Exception e) {
-			e.printStackTrace();
-			//TODO write to Android LOG
+			logHelper.toLog(isLogEnabled, "ConnectHelper -> logInToWiFi() - \"httpsConnection.getOutputStream()->\"EXCEPTION: " + e.getMessage());
 		} finally {
 			if (ostream != null) {
 				try {
 					ostream.flush();
 					ostream.close();
 				} catch (IOException e) {
-					e.printStackTrace();
-					//TODO write to Android LOG
+					logHelper.toLog(isLogEnabled, "ConnectHelper -> logInToWiFi() - \"ostream actions->\"EXCEPTION: " + e.getMessage());
 				}
 			}
 		}
@@ -345,8 +339,8 @@ public class ConnectHelper {
 		boolean isLoggedIn = false;
 		Object contents;
 		try {
-			int responseCode = httpsConnection.getResponseCode();
-			String u = httpsConnection.getContentType();
+			//int responseCode = httpsConnection.getResponseCode();
+			//String u = httpsConnection.getContentType();
 			contents = httpsConnection.getContent();
 			if (contents != null) {
 				InputStream is = (InputStream) contents;
@@ -359,12 +353,17 @@ public class ConnectHelper {
 				if(response.contains("User Authenticated")){
 					// Logged in successfully
 					isLoggedIn = true;
+					logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedIn() - User \"" + 
+							this.loginData.getUser() + "\"authentication SUCCEEDED.");
+				} else {
+					logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedIn() - User \"" + 
+						this.loginData.getUser() + "\"authentication FAILED.");
 				}
+				
 			}
 			httpsConnection.disconnect();
 		} catch (IOException e) {
-			e.printStackTrace();
-			// TODO write to Android LOG
+			logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedIn() EXCEPTION - " + e.getMessage());
 		}
 		logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedIn() ended.");
 		return isLoggedIn;
