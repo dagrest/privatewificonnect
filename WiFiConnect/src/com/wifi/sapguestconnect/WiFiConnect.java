@@ -11,6 +11,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.database.SQLException;
 import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -175,8 +176,9 @@ public class WiFiConnect extends Activity {
 		});
 
 		// Get login data from DB 
-		connectHelper.LoadLoginData();
-		fillLoginDataDialog();
+		if( connectHelper.LoadLoginData() ){
+			fillLoginDataDialog();
+		}
 		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() ended.");
     } // on Create()
 

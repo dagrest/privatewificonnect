@@ -16,7 +16,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     private static String DB_PATH = "/data/data/com.wifi.sapguestconnect/databases/";
     private static String DB_NAME = "WiFiLoginDB";
     private SQLiteDatabase myDataBase; 
-//    private final Context myContext;
+    private final Context myContext;
     private LogHelper logHelper;
     private boolean isLogEnabled;
  
@@ -28,7 +28,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     public DataBaseHelper(Context context) {
  
     	super(context, DB_NAME, null, 1);
-//        this.myContext = context;
+        this.myContext = context;
         logHelper = LogHelper.getLog();
         isLogEnabled = logHelper.isLogEnabled();
     }	
@@ -147,7 +147,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
  
     		//By calling this method and empty database will be created into the default system path
             //of your application so we are gonna be able to overwrite that database with our database.
-//        	SQLiteDatabase db = this.getWritableDatabase();
+        	SQLiteDatabase db = this.getWritableDatabase();
 
 //        	try {
 // 
