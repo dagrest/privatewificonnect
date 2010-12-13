@@ -9,6 +9,6 @@
 
 Currently in order to enforce logging:
 
-1. Create the following folder on SDCARD: *WiFiConnect*.
-2. Create inside the "WiFiConnect" folder the following file: *config.dat*.
-3. Log messages will be recorded to *WiFiConnect/WiFiConnect.log* file.
+1. Create the following folder on SDCARD: WiFiConnect.
+2. Create inside the "WiFiConnect" folder the following file: config.dat.
+3. Log messages will be recorded to WiFiConnect/WiFiConnect.log file.
