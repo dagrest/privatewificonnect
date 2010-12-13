@@ -100,30 +100,37 @@ public class ConnectHelper {
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() ended.");
 	}
 
-	void LoadLoginData(){
+	boolean LoadLoginData() {
+		boolean retCode = false;
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> LoadLoginData() started.");
 		DataBaseHelper myDbHelper = new DataBaseHelper(context);
 		try {
 				Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' before 'createDataBase' ...");
 				myDbHelper.createDataBase();
+				retCode = true;
 				Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' after 'createDataBase' ...");
 		} catch (IOException ioe) {
-			logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> LoadLoginData(): Unable to create database");
-			throw new Error("Unable to create database");
+			logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> LoadLoginData(): Unable to create database. " + ioe.getMessage());
+			retCode = false;
 		}
 		try {
 			Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' before 'openDataBase' ...");
 			myDbHelper.openDataBase();
+			retCode = true;
 			Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' after 'openDataBase' ...");
 		} catch (SQLException sqle) {
-        	logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> LoadLoginData(): login failed!");
-			throw sqle;
+        	logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> LoadLoginData(): Unable to open DB. " + sqle.getMessage());
+        	retCode = false;
 		}
 		
-		loginData = myDbHelper.getLoginData(MY_DATABASE_TABLE);
-		String ssid = loginData.getSSID();
-		if(ssid != null && ssid.length() > 0){
-			loginData.setSSID(ssid);
+		if( retCode != false ){
+			loginData = myDbHelper.getLoginData(MY_DATABASE_TABLE);
+			String ssid = loginData.getSSID();
+			if(ssid != null && ssid.length() > 0){
+				loginData.setSSID(ssid);
+			}
+			myDbHelper.close();
+			retCode = true;
 		}
 		
 //		// create and save login information in database
@@ -131,9 +138,9 @@ public class ConnectHelper {
 //			long res = myDbHelper.saveLoginInformation(MY_DATABASE_TABLE, user, pass, bssID);
 //			loginData = myDbHelper.getLoginData(MY_DATABASE_TABLE);
 //		}
-		
-		myDbHelper.close();
-    	logHelper.toLog(isLogEnabled, "ConnectHelper -> LoadLoginData() ended.");
+
+		logHelper.toLog(isLogEnabled, "ConnectHelper -> LoadLoginData() ended.");
+    	return retCode;
     }
 
 //	void ProgressBarDialog(Context context, boolean toShowDialog){
