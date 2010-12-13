@@ -1,13 +1,13 @@
-#summary This application was created to connect to Guest WiFi by one click.
+#summary *WiFIConnect* application was created to connect to Guest WiFi by one click.
 
 = Introduction =
 
-...
-
+*WiFIConnect* was created as free application for me and my friends.
+If you have any comments or suggestions please send them to *dagrest@gmail.com*
 
 = Details =
 
-Currently in order to enforce logging:
+Enabling logging:
 
 1. Create the following folder on SDCARD: *WiFiConnect*.<br />
 2. Create inside the *WiFiConnect* folder the following file: *config.dat*.<br />
