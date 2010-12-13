@@ -10,6 +10,6 @@
 Currently in order to enforce logging:
 
 1. Create the following folder on SDCARD: *WiFiConnect*.<br />
-2. Create inside the "WiFiConnect" folder the following file: *config.dat*.<br />
+2. Create inside the *WiFiConnect* folder the following file: *config.dat*.<br />
 3. Log messages will be recorded to *WiFiConnect/WiFiConnect.log* file.<br />
 Note: *WiFiConnect.log* will be deleted and created from the beginning each time program is started.
