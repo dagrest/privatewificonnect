@@ -35,8 +35,16 @@ public class ConnectHelper {
 	ProgressDialog progressDialog = null;
 	private LogHelper logHelper;
 	private boolean isLogEnabled;
+	private WifiManager wm = null;
 	
-    ConnectHelper(final Context context, final WifiManager wm){
+    public ConnectHelper(final Context context){
+    	this.context = context;
+    	this.wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);	
+    	logHelper = LogHelper.getLog();
+    	isLogEnabled = logHelper.isLogEnabled();
+    }
+	
+    public ConnectHelper(final Context context, final WifiManager wm){
     	this.context = context;
     	this.wm = wm;
     	logHelper = LogHelper.getLog();
@@ -55,8 +63,6 @@ public class ConnectHelper {
 		this.isLoginDataChanged = isLoginDataChanged;
 	}
 
-	private WifiManager wm = null;
-
     boolean isLoginDataExist(final String user, final String pass, final String ssid){
 		if(loginData.getUser() != null && loginData.getPass() != null && loginData.getSSID() != null &&
 		   loginData.getUser() != "" && loginData.getPass() != "" && loginData.getSSID() != "" &&
@@ -68,8 +74,17 @@ public class ConnectHelper {
 		return false;
 	}
 
-    boolean isConnectedToCorrectWiFi(final String ssID) {
-    	return loginData.getSSID().compareToIgnoreCase(ssID) == 0;
+    public boolean isConnectedToCorrectWiFi() 
+    {
+	    return isConnectedToCorrectWiFi(wm.getConnectionInfo().getSSID());
+    }
+    
+    public boolean isConnectedToCorrectWiFi(final String ssID) 
+    {
+    	if (wm.isWifiEnabled() && (ssID != null) && (ssID.trim().length() > 0))
+    		return loginData.getSSID().compareToIgnoreCase(ssID) == 0;
+    	else
+    		return false;
     }
     
 	void saveLoginData(final String user, final String pass, final String netID){
@@ -100,7 +115,7 @@ public class ConnectHelper {
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() ended.");
 	}
 
-	boolean LoadLoginData() {
+	public boolean LoadLoginData() {
 		boolean retCode = false;
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> LoadLoginData() started.");
 		DataBaseHelper myDbHelper = new DataBaseHelper(context);
@@ -188,7 +203,7 @@ public class ConnectHelper {
 		return isLoggedIn;
 	}
 	
-	boolean isLoggedInToSAP(){
+	public boolean isLoggedInToSAP(){
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedInToSAP() started.");
 		boolean isLoggedInToSAP = false; 
 		if(ifWifiEnabled() == true){
@@ -211,7 +226,7 @@ public class ConnectHelper {
 		return isLoggedInToSAP;
 	}
 	
-	errorMessages loginToSAPWiFi(){
+	public errorMessages loginToSAPWiFi(){
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() started.");
     	if(ifWifiEnabled() == true){
             String macAddress = getMacAddress();
@@ -439,4 +454,5 @@ public class ConnectHelper {
 		logHelper.toLog(isLogEnabled, "ConnectHelper -> getIPAddress() ended.");		
 		return strIP;
 	}
+	  
 }

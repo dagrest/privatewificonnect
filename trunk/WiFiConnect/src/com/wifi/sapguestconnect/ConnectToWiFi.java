@@ -2,6 +2,7 @@ package com.wifi.sapguestconnect;
 
 import android.app.ProgressDialog;
 import com.wifi.sapguestconnect.ErrorMessages.errorMessages;
+import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 
 public class ConnectToWiFi implements Runnable {
 
@@ -39,6 +40,7 @@ public class ConnectToWiFi implements Runnable {
 				//show();
 				if(this.connectHelper.isLoginDataExist(user, pass, ssid) == false){
 					this.connectHelper.saveLoginData(user, pass, ssid);
+					PreferencesFacade.refreshRunAsService(wifiActivity.getBaseContext());
 					//this.wifiActivity.fillLoginDataDialog();
 				}
 				
@@ -48,12 +50,14 @@ public class ConnectToWiFi implements Runnable {
 				}
 				else{
 					this.connectHelper.saveLoginData(user, pass, ssid);
+					PreferencesFacade.refreshRunAsService(wifiActivity.getBaseContext());
 					//this.wifiActivity.fillLoginDataDialog();
 					handler.sendEmptyMessage(ErrorMessages.toInt(connectHelper.loginToSAPWiFi()));
 				}
 			}
 			else{
 				this.connectHelper.saveLoginData(user, pass, ssid);
+				PreferencesFacade.refreshRunAsService(wifiActivity.getBaseContext());
 				handler.sendEmptyMessage(ErrorMessages.toInt(errorMessages.ALREADY_CONNECTED));
 			}
 		} catch (Exception e) {

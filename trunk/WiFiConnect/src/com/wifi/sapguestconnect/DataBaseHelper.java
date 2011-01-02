@@ -48,6 +48,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 //    			int columnsCount = result.getColumnCount();
 //        		result.moveToNext();
 //    		}
+    		result.close();
     	}
     	catch (SQLException e) {
         	logHelper.toLog(isLogEnabled, "EXCEPTION: DataBaseHelper -> isTableExist(): " + e.getMessage());
@@ -100,9 +101,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     }
 
     public LoginData getLoginData(String table){
-    	String user = null;
-    	String pass = null;
-    	String bssID = null;
+    	String user = "";
+    	String pass = "";
+    	String bssID = "";
     	
     	logHelper.toLog(isLogEnabled, "DataBaseHelper -> getLoginData() started.");
     	String sqlIsTableExistStmt = "SELECT * FROM " + table;// + " WHERE _id='5'";
@@ -121,6 +122,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     		else{
     			return null;
     		}
+    		
+    		result.close();
     	}
     	catch (SQLException e) {
     		//TODO error message to log
@@ -274,7 +277,6 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 		// TODO Auto-generated method stub
 		
 	}
- 
         // Add your public helper methods to access and get content from the database.
        // You could return cursors by doing "return myDataBase.query(....)" so it'd be easy
        // to you to create adapters for your views.

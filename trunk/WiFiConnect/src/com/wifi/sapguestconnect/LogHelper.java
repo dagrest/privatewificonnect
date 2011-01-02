@@ -73,5 +73,4 @@ public class LogHelper {
 	public boolean isLogEnabled(){
 		return isLogEnabled;
 	}
-
 }
