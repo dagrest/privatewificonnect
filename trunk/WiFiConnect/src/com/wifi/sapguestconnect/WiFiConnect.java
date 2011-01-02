@@ -30,6 +30,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class WiFiConnect extends Activity {
+
+	private static final int BASE_ITEM_ID = 0;
+	private static final int BASE_GROUP_ID = 0;
+	private static final int BASE_ORDER_ID = 0;
 	
 	private WifiManager wm = null;
     private EditText userEditText;
@@ -263,9 +267,9 @@ public class WiFiConnect extends Activity {
        
 		
 		// Settings Item
-		MenuItem settingsMenuItem = menu.add(0, // Group ID
-									0,  // Item ID
-									0, 	// Order ID			
+		MenuItem settingsMenuItem = menu.add(BASE_GROUP_ID, // Group ID
+									BASE_ITEM_ID,  // Item ID
+									BASE_ORDER_ID, 	// Order ID			
 									resources.getString(R.string.menu_settings)); // Title
 		
 		
@@ -282,9 +286,9 @@ public class WiFiConnect extends Activity {
 		});
 		
 		// About Item
-		MenuItem aboutMenuItem = menu.add(0, // Group ID
-									1,  // Item ID
-									1, 	// Order ID			
+		MenuItem aboutMenuItem = menu.add(BASE_GROUP_ID, // Group ID
+									BASE_ITEM_ID+1,  // Item ID
+									BASE_ORDER_ID+1, 	// Order ID			
 									resources.getString(R.string.menu_about)); // Title
 
 		aboutMenuItem.setIcon(R.drawable.light_48);
@@ -294,23 +298,7 @@ public class WiFiConnect extends Activity {
 							@Override
 							public boolean onMenuItemClick(MenuItem item) 
 							{
-								Context mContext = WiFiConnect.this;
-								Resources resources = mContext.getResources();
-								Dialog dialog = new Dialog(mContext);
-
-								// Set Title
-								dialog.setContentView(R.layout.about_dialog);
-								dialog.setTitle(resources.getString(R.string.app_name));
-
-								// Set Text
-								TextView text = (TextView) dialog.findViewById(R.id.text);
-								text.setText(resources.getString(R.string.app_about_summary));
-								
-								// Set Image
-								ImageView image = (ImageView) dialog.findViewById(R.id.image);
-								image.setImageResource(R.drawable.sap_connect);
-								
-								dialog.show();
+								AboutDialog.show(WiFiConnect.this);
 								
 								return true;
 							}
@@ -318,9 +306,9 @@ public class WiFiConnect extends Activity {
 		
 		
 		// Quit Item
-		MenuItem quitMenuItem = menu.add(0, // Group ID
-									2,  // Item ID
-									2, 	// Order ID			
+		MenuItem quitMenuItem = menu.add(BASE_GROUP_ID, // Group ID
+									BASE_ITEM_ID+2,  // Item ID
+									BASE_ORDER_ID+2, 	// Order ID			
 									resources.getString(R.string.menu_quit)); // Title
 		
 		quitMenuItem.setIcon(R.drawable.exit_48);
