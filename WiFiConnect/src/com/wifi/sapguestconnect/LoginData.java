@@ -6,9 +6,9 @@ public class LoginData {
 	private String ssID;
 	
 	public LoginData(){
-		user = null;
-		pass = null;
-		ssID = null;
+		user = "";
+		pass = "";
+		ssID = "";
 	}
 	
 	public LoginData(String user, String pass, String bssID){

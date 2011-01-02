@@ -39,7 +39,7 @@ public class MyConnectOnClickListener implements View.OnClickListener{
 			                false);
 
 					MessagesHandler handler = new MessagesHandler(progressDialog, wifiActivity);
-
+					
 					ConnectToWiFi connectToWiFi = new ConnectToWiFi(wifiActivity, progressDialog, connectHelper, handler);
 					Thread t = new Thread(connectToWiFi);
 			        t.start();

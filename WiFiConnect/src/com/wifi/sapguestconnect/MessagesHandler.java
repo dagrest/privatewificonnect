@@ -1,7 +1,6 @@
 package com.wifi.sapguestconnect;
 
 import android.app.ProgressDialog;
-import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 
