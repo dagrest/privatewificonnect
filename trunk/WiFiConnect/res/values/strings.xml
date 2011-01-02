@@ -1,7 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, WiFiConnect!</string>
+    
     <string name="app_name">Guest WiFi Connect</string>
 
-<string name="TextView02">bbb</string>
+
+
+<string name="pref_connection_settings_category">Connection settings</string>
+<string name="pref_connection_settings_category_key">connectionSettings</string>
+<string name="pref_additional_settings_category">Additional settings</string>
+<string name="pref_additional_settings_category_key">additionalSettings</string>
+
+<string name="pref_settings_run_as_service">Run as a service</string>
+<string name="pref_settings_run_as_service_summary">Run in the background and connect to SAP Guest automatically</string>
+<string name="pref_settings_run_as_service_key">runAsService</string>
+
+<string name="pref_settings_show_icon">Show icon</string>
+<string name="pref_settings_show_icon_summary">Show icon in task bar</string>
+<string name="pref_settings_show_icon_key">showIcon</string>
+
+<string name="pref_settings_start_at_boot">Start on boot</string>
+<string name="pref_settings_start_at_boot_summary">Start the application at boot</string>
+<string name="pref_settings_start_at_boot_key">startAtBoot</string>
+
+<string name="pref_settings_enable_connection_sound">Enable sound</string>
+<string name="pref_settings_enable_connection_sound_summary">Enable notification sound on connection</string>
+<string name="pref_settings_enable_connection_sound_key">enableConnectSound</string>
+
+<string name="pref_settings_ringtone">Select ringtone</string>
+<string name="pref_settings_ringtone_summary">Choose notification ringtone</string>
+<string name="pref_settings_ringtone_key">notificationRingtone</string>
+
+<string name="pref_settings_vibrate">Vibrate</string>
+<string name="pref_settings_vibrate_summary">Vibrate on connection</string>
+<string name="pref_settings_vibrate_key">notificationVibrate</string>
+
+
+<string name="notif_service_still_running_summary">Guest Wifi is running</string>
+<string name="shared_settings_file_name">WifiConnectSharedSettings</string>
+
+<string name="app_about_summary">Developed by David Agrest, Slava Gorelik and George Haddad.</string>
 </resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android" android:key="WifiConnectPreferences">
+
+    <PreferenceCategory android:title="@string/pref_connection_settings_category" android:key="@string/pref_connection_settings_category_key">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:title="@string/pref_settings_run_as_service"
+            android:key="@string/pref_settings_run_as_service_key"
+            android:summary="@string/pref_settings_run_as_service_summary"/>
+            
+		<CheckBoxPreference
+            android:defaultValue="true"
+            android:title="@string/pref_settings_show_icon"
+            android:key="@string/pref_settings_show_icon_key"
+            android:summary="@string/pref_settings_show_icon_summary"/>
+         
+		<CheckBoxPreference
+            android:defaultValue="true"
+            android:title="@string/pref_settings_start_at_boot"
+            android:key="@string/pref_settings_start_at_boot_key"
+            android:summary="@string/pref_settings_start_at_boot_summary"/>
+            
+    </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/pref_additional_settings_category" android:key="@string/pref_additional_settings_category_key">
+           
+		<CheckBoxPreference
+            android:defaultValue="true"
+            android:title="@string/pref_settings_enable_connection_sound"
+            android:key="@string/pref_settings_enable_connection_sound_key"
+            android:summary="@string/pref_settings_enable_connection_sound_summary"/>
+            
+        <RingtonePreference
+            android:title="@string/pref_settings_ringtone"
+            android:key="@string/pref_settings_ringtone_key"
+            android:summary="@string/pref_settings_ringtone_summary" android:ringtoneType="notification" android:showDefault="true" android:showSilent="false"/>
+        
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:title="@string/pref_settings_vibrate"
+            android:key="@string/pref_settings_vibrate_key"
+            android:summary="@string/pref_settings_vibrate_summary"/>
+               
+</PreferenceCategory>
+    
+</PreferenceScreen>
+
