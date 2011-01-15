@@ -39,4 +39,27 @@
 <string name="shared_settings_file_name">WifiConnectSharedSettings</string>
 
 <string name="app_about_summary">Developed by David Agrest, Slava Gorelik and George Haddad.</string>
+<string name="user_name">Username</string>
+<string name="password">Password</string>
+<string name="connect">Connect</string>
+<string name="wifi_ssid">Wifi name</string>
+<string name="show_password">Show password</string>
+<string name="ok">Ok</string>
+<string name="cancel">Cancel</string>
+<string name="pick_a_network">Pick a network</string>
+<string name="wifi_id">Wifi id</string>
+<string name="yes">Yes</string>
+<string name="no">No</string>
+<string name="wifi_enable_question">Wifi is disabled. Do you wish to enable it ?</string>
+<string name="wifi_enable_error">Unable to turn on Wifi on your device.\nPlease manually enable Wifi and try again.</string>
+<string name="connect_description">- press to connect to wifi -</string>
+<string name="downloading">Downloading...</string>
+<string name="new_version_update_question">Newer version available.\nDo you wish to update ?</string>
+<string name="download_starting">Download starting...</string>
+<string name="connect_success">Successfully connected.</string>
+<string name="connecting">Connecting...</string>
+<string name="connect_fail">Connection failed.</string>
+<string name="unknown_wifi">Unknown Wifi. Unable to connect.</string>
+<string name="already_connected">Already connected.</string>
+<string name="wifi_disabled">Wifi disabled. Unable to connect.</string>
 </resources>
