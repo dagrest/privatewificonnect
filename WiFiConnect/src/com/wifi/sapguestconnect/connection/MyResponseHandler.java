@@ -1,4 +1,4 @@
-package com.wifi.sapguestconnect;
+package com.wifi.sapguestconnect.connection;
 
 import java.io.IOException;
 
@@ -6,7 +6,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.impl.client.BasicResponseHandler;
 
-public class MyResponseHandler extends BasicResponseHandler {
+class MyResponseHandler extends BasicResponseHandler { // TODO refactor
 
 	private int status = -1;
 	

@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.wifi.sapguestconnect.ConnectHelper;
-import com.wifi.sapguestconnect.LogHelper;
+import com.wifi.sapguestconnect.connection.ConnectHelper;
+import com.wifi.sapguestconnect.log.LogHelper;
 import com.wifi.sapguestconnect.notification.NotificationManager;
 
 import android.app.Service;
@@ -131,12 +131,8 @@ public class AutoconnectService extends Service
         public void run() 
         { 
         	logHelper.toLog(isLogEnabled, "AutoconnectService -> ConnectionTimerTask -> run() started.");
-        	
-        	if (!connectHelper.isLoggedInToSAP())
-        	{
-        		connectHelper.loginToSAPWiFi();
-        	}
-        	
+
+        	connectHelper.connectToWifi();
         } 
     }
 

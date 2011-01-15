@@ -16,7 +16,7 @@ public class NotificationManager
 		String serviceRunningTitle = resources.getString(R.string.app_name);
 		String serviceRunningSummary = resources.getString(R.string.notif_service_still_running_summary); 
 		
-		NotificationHelper.displayNotificationMessage(context, R.id.Notification, serviceRunningTitle, serviceRunningSummary);
+		NotificationHelper.displayNotificationMessage(context, 0, serviceRunningTitle, serviceRunningSummary);
 	}
 	
 	public static void clearServiceRunningNotification(Context context)

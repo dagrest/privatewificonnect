@@ -1,6 +1,10 @@
-package com.wifi.sapguestconnect;
+package com.wifi.sapguestconnect.data;
 
 import java.io.IOException;
+
+import com.wifi.sapguestconnect.LoginData;
+import com.wifi.sapguestconnect.log.LogHelper;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -150,7 +154,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
  
     		//By calling this method and empty database will be created into the default system path
             //of your application so we are gonna be able to overwrite that database with our database.
-        	SQLiteDatabase db = this.getWritableDatabase();
+			getWritableDatabase();
 
 //        	try {
 // 
@@ -267,9 +271,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 //	}
 
 	@Override
-	public void onCreate(SQLiteDatabase arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onCreate(SQLiteDatabase arg0) 
+	{
+		// No implementation
 	}
 
 	@Override
