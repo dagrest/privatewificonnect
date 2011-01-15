@@ -1,276 +1,297 @@
 package com.wifi.sapguestconnect;
 
-import java.util.Locale;
-
-import com.wifi.sapguestconnect.ErrorMessages.errorMessages;
+import com.wifi.sapguestconnect.autoupdate.AutoUpdater;
+import com.wifi.sapguestconnect.connection.ConnectionErrorMessages;
+import com.wifi.sapguestconnect.connection.ConnectionFacade;
+import com.wifi.sapguestconnect.connection.ConnectionStatus;
+import com.wifi.sapguestconnect.connection.ConnectionFacade.IConnectionAttemptResponse;
+import com.wifi.sapguestconnect.connection.ConnectionFacade.IConnectionStatusResponse;
+import com.wifi.sapguestconnect.data.DataFacade;
+import com.wifi.sapguestconnect.dialog.AboutDialog;
+import com.wifi.sapguestconnect.log.LogHelper;
 import com.wifi.sapguestconnect.preferences.SettingsActivity;
 import com.wifi.sapguestconnect.wifi.WatchdogService;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
+import android.content.IntentFilter;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.MenuItem.OnMenuItemClickListener;
-import android.widget.Button;
-import android.widget.EditText;
+import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
-public class WiFiConnect extends Activity {
-
+public class WiFiConnect extends Activity 
+{
 	private static final int BASE_ITEM_ID = 0;
 	private static final int BASE_GROUP_ID = 0;
 	private static final int BASE_ORDER_ID = 0;
 	
-	private WifiManager wm = null;
-    private EditText userEditText;
-	private EditText passEditText;
-    private TextView statusText;
-    private Button connectButton;
-    private ConnectHelper connectHelper;
-    private TextView networkID = null;
-    private ProgressDialog progressDialog;
-    private LogHelper logHelper;
-    private boolean isLogEnabled;
-    private Resources resources;
-	private Button selectNetworkBtn = null;
-
+	private LogHelper mLogHelper = null;
+	private boolean isLogEnabled = false;
+	private Resources mResources = null;
 	
-	@Override
-    public void onResume()
-    {
-		logHelper.toLog(isLogEnabled, "WiFiConnect -> onResume() started.");
-		super.onResume();
-		
-        if(! wm.isWifiEnabled()) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("WiFi is disabled, please enable it and start application again") // TODO: Put String into Resource XML
-			       .setCancelable(false)
-			       .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			           public void onClick(DialogInterface dialog, int id) {
-//			        	   WiFiConnect.this.finish();
-			           }
-			       });	     
-			AlertDialog alert = builder.create();
-			alert.show();
-		}
-		else{
-			progressDialog = ProgressDialog.show(this, "Please wait...", "Checking connection state...", true, false); // TODO: Put String into Resource XML
-			MessagesHandler handler = new MessagesHandler(progressDialog, this);
-			IsLoggedInProgress isLoggedInProgress = new IsLoggedInProgress(this, progressDialog, connectHelper, handler);
-			Thread t = new Thread(isLoggedInProgress);
-	        t.start();
-			
-			// try to delete "isLoggedInProgress" instance from memory
-		    isLoggedInProgress = null;
-		}
-		logHelper.toLog(isLogEnabled, "WiFiConnect -> onResume() ended.");
-    }	
+	private LoginData mLoginData = null;
 	
-    /** Called with the activity is first created. */
+	BroadcastReceiver mWifiWatcher = null;
+	
+	private ScaleAnimation mAnimation = null;
+
 	@Override
-    public void onCreate(Bundle icicle)
-    {
-		logHelper = LogHelper.getLog();
-		isLogEnabled = logHelper.isLogEnabled();
-		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() started.");
-
-        super.onCreate(icicle);
-        Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'onCreate' function started...");
-        setContentView(R.layout.main);
-
-        resources = getResources();
-        
-        // Lock screen orientation to vertical
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); 
-        // Get the EditText, TextView and Button References 
-        userEditText = (EditText)findViewById(R.id.UserEditText);
-        passEditText = (EditText)findViewById(R.id.PassEditText);
-        statusText = (TextView)findViewById(R.id.StatusText);
-        connectButton = (Button)findViewById(R.id.ConnectButton); 
-        selectNetworkBtn = (Button)findViewById(R.id.NetSelectBtn); 
-        networkID = (TextView)findViewById(R.id.NetworkIDText);
-        
-		if (wm == null) {
-			logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> getSystemService() started.");
-			wm = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-			logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> getSystemService() ended.");
-		}
+	protected void onCreate(Bundle savedInstanceState) 
+	{
+		super.onCreate(savedInstanceState);
+	    setContentView(R.layout.wifi_connect);
+	    
+		// Init Log
+	    mLogHelper = LogHelper.getLog();
+		isLogEnabled = mLogHelper.isLogEnabled();
+		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate()");
 		
-		connectHelper = new ConnectHelper(this, wm);
+		// Init Resources
+		this.mResources = this.getResources();
 		
-		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> setOnClickListener() started.");
-		selectNetworkBtn.setOnClickListener(new SelectNetworkListener(wm, this));
-		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> setOnClickListener() ended.");
-		//ssidSpinner.setOnItemSelectedListener(new MyOnItemSelectedListener(connectHelper));
-
-		//
-		// Here were actions that were removed to onResume() action
-        //
+		// Load Login Data
+		this.mLoginData= DataFacade.LoadLoginData(this);
 		
-		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> MyConnectOnClickListener() started.");
-		connectButton.setOnClickListener(new MyConnectOnClickListener(this, wm, connectHelper, progressDialog));
-		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() -> MyConnectOnClickListener() ended.");
+		AutoUpdater.CheckForUpdate(this);
 		
-		userEditText.addTextChangedListener(new TextWatcher() {
-			public void afterTextChanged(Editable s) {
-				connectHelper.setLoginDataChanged(true);
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// do nothing
-			}
-
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// do nothing
-			}
-		});
-
-//		Thread.currentThread().setUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-//		    @Override
-//		    public void uncaughtException(Thread thread, Throwable ex) {
-//
-//		    PrintWriter pw;
-//		    try {
-//		        pw = new PrintWriter(
-//		                new FileWriter(Environment.getExternalStorageDirectory()+"/rt.log", true));
-//		        ex.printStackTrace(pw);
-//		        pw.flush();
-//		        pw.close();
-//		    } catch (IOException e) {
-//		        e.printStackTrace();
-//		    }
-//		}
-//		});
+		// Init Layout
+		initLayout();
 		
-		passEditText.addTextChangedListener(new TextWatcher() {
-			public void afterTextChanged(Editable s) {
-				connectHelper.setLoginDataChanged(true);
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// do nothing
-			}
-
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// do nothing
-			}
-		});
-
-		// Get login data from DB 
-		if( connectHelper.LoadLoginData() ){
-			fillLoginDataDialog();
-		}
+		// Init Wifi Watcher
+		initWifiWatcher();
+		
+		// Init Animation
+		initAnimation();
 		
 		WatchdogService.Start(this);
 		
-		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate() ended.");
-    } // on Create()
-
-	EditText getUserEditText() {
-		return userEditText;
-	}
-
-	TextView getNetworkID() {
-		return networkID;
-	}
-	 
-	 
-	void setUserEditText(EditText userEditText) {
-		this.userEditText = userEditText;
-	}
-
-	EditText getPassEditText() {
-		return passEditText;
-	}
-
-	void setPassEditText(EditText passEditText) {
-		this.passEditText = passEditText;
 	}
 	
-	void setNetworkID(final String networkID) {
-		this.networkID.setText(networkID);
-		connectHelper.setLoginDataChanged(true);
+	
+	/***
+	 * Broadcast receiver for watching Wifi
+	 */
+	private void initWifiWatcher()
+	{
+	        IntentFilter intentFilter = new IntentFilter();
+	        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+	        intentFilter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+	        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+	        mWifiWatcher = new BroadcastReceiver() 
+	        {
+				@Override
+				public void onReceive(Context context, Intent intent) 
+				{
+					refreshConnectionStatus();
+				}
+			};
+	        registerReceiver(mWifiWatcher, intentFilter);
 	}
 	
-	// Convert and set error message according to error code
-	void setLogMessage(errorMessages errorCode){
-		switch (errorCode) {
-		case NOT_CONNECTED: 	setValue(statusText, Color.YELLOW, "Not connected");  // TODO: Put String into Resource XML
-								break;
-    	case ALREADY_CONNECTED: setValue(statusText, Color.GREEN, "Already connected");  // TODO: Put String into Resource XML
-    							break;
-	    case SUCCESS: 			setValue(statusText, Color.GREEN, "Logged in successfully");  // TODO: Put String into Resource XML
-	                   			break;
-	    case FAILED: 			setValue(statusText, Color.RED ,"Login failed");		  // TODO: Put String into Resource XML
-	    						break;
-	    case WIFI_TURNED_OFF: 	setValue(statusText, Color.RED, "WiFi is turned off"); // TODO: Put String into Resource XML
-	                    		break; 
-	    case NOT_CORRECT_WIFI: 	setValue(statusText, Color.RED, "Connect to the correct WiFi"); // TODO: Put String into Resource XML
-								break;
+	private void initAnimation()
+	{
+        // Define animation
+		mAnimation = new ScaleAnimation(
+                0.9f, 1, 0.9f, 1, // From x, to x, from y, to y
+                ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
+                ScaleAnimation.RELATIVE_TO_SELF, 0.5f);
+		mAnimation.setDuration(600);
+		mAnimation.setFillAfter(true); 
+		mAnimation.setStartOffset(0);
+		mAnimation.setRepeatCount(1);
+		mAnimation.setRepeatMode(Animation.REVERSE);
+
+	}
+	
+	/***
+	 * UI Initializers
+	 */
+	private void initLayout()
+	{
+		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> initLayout()");
+		
+		initConnectBtnLayout();
+	}
+	
+	
+	private void initConnectBtnLayout() 
+	{
+		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> initConnectBtnLayout()");
+		
+		
+	    setViewOnClickListener(R.id.connect_button, new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				WiFiConnect.this.displayToastMessage(mResources.getString(R.string.connecting)); // TODO Use Resource
+				
+				ConnectionFacade.ConnectAsync(WiFiConnect.this, mLoginData, new IConnectionAttemptResponse() 
+				{					
+					@Override
+					public void OnResponse(ConnectionErrorMessages response) 
+					{
+						displayConnectionAttemptResponseMessages(response);
+						
+						ConnectionFacade.isConnectedAsync(WiFiConnect.this, new IConnectionStatusResponse() 
+						{
+							@Override
+							public void OnResponse(ConnectionStatus response) 
+							{
+								updateConnectionStatus(response);
+							}
+						});
+					}
+				});
+			}
+		});	
+	}
+	
+	private void displayConnectionAttemptResponseMessages(ConnectionErrorMessages response)
+	{
+		int toastMsgResId = -1;
+		
+		switch(response)
+		{
+			case ALREADY_CONNECTED:
+				toastMsgResId = R.string.already_connected;
+				break;
+			case SUCCESS:
+				toastMsgResId = R.string.connect_success;
+				break;
+			case FAIL:
+				toastMsgResId = R.string.connect_fail;
+				break;
+			case UNKNOWN_WIFI:
+				toastMsgResId = R.string.unknown_wifi;
+				break;
+			case WIFI_TURNED_OFF:
+				toastMsgResId = R.string.wifi_disabled;
+				break;
 		}
+		
+		if (toastMsgResId != -1)
+			WiFiConnect.this.displayToastMessage(mResources.getString(toastMsgResId));
 	}
 	
-	void setStatusText(final String value){
-		setValue(statusText, value);
+	private void setViewOnClickListener(int viewId, OnClickListener onClickListener)
+	{
+		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> setViewOnClickListener()");
+		
+	    View view = (View) findViewById(viewId);
+	    view.setOnClickListener( onClickListener );
+	}
+
+	@Override
+	protected void onResume() 
+	{
+		super.onResume();
+		
+		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> onResume()");
+		
+		refreshConnectionStatus();
 	}
 	
-	private void setValue(final TextView tv, int color, final String value){
-        	setValue(tv, value);
-        	tv.setTextColor(color);
+	private void refreshConnectionStatus()
+	{
+		ConnectionFacade.isConnectedAsync(this, new IConnectionStatusResponse() 
+		{
+			@Override
+			public void OnResponse(ConnectionStatus response) 
+			{
+				updateConnectionStatus(response);
+			}
+		});
 	}
 	
-	// Set value to UI elements
-	private void setValue(final TextView tv, final String value){
-        if(value == null) {
-        	tv.setText("");	
-        }
-        else {
-        	tv.setText(value);
-        }
+	private void updateConnectionStatus(ConnectionStatus connStatus)
+	{
+		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> updateConnectionStatus()");
+		
+		ImageView connStatusImg = (ImageView)findViewById(R.id.connect_button);
+		
+		switch(connStatus)
+		{
+			case NOT_CONNECTED:
+				connStatusImg.setImageResource(R.drawable.wifi_red);
+				break;
+			case CONNECTED:
+				connStatusImg.setImageResource(R.drawable.wifi_green);
+				break;
+			case CONNECTED_UNKNOWN_WIFI:
+				connStatusImg.setImageResource(R.drawable.wifi_orange);
+				break;
+			case WIFI_DISABLED:
+				connStatusImg.setImageResource(R.drawable.wifi_grey);
+				break;
+		}
+		
+		// Animation
+		if (mAnimation != null)
+			connStatusImg.startAnimation(mAnimation);
 	}
 	
-	// Fill login data to main dialog 
-	void fillLoginDataDialog(){
-		LoginData loginData = connectHelper.getLoginData();
-		setValue(userEditText, loginData.getUser());
-		setValue(passEditText, loginData.getPass());
-		setValue(networkID, loginData.getSSID());
-		setValue(statusText, "");
-		connectHelper.setLoginDataChanged(false);
+    // Display Toast-Message
+	public void displayToastMessage(String message) 
+	{
+		if ((message == null) || (message.trim().length() == 0))
+		{
+			return;
+		}
+		
+		Toast toastMsg = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+		toastMsg.show();
 	}
 	
-	
+	/***
+	 * Menu Part
+	 */
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		logHelper.toLog(isLogEnabled, "WiFiConnect -> onCreateOptionsMenu () started.");
+	public boolean onCreateOptionsMenu(Menu menu) 
+	{
+		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> onCreateOptionsMenu()");
 		
 		super.onCreateOptionsMenu(menu);
-       
+		
+		int base_group_id = BASE_GROUP_ID;
+		int base_item_id = BASE_ITEM_ID;
+		int base_order_id = BASE_ORDER_ID;
+		
+		// Wifi Settings Item
+		MenuItem wifiSettingsMenuItem = menu.add(base_group_id++, // Group ID
+									base_item_id++,  // Item ID
+									base_order_id++, 	// Order ID			
+									mResources.getString(R.string.menu_wifi_settings)); // Title
+		
+		
+		wifiSettingsMenuItem.setIcon(R.drawable.wifi_48);
+		
+		wifiSettingsMenuItem.setOnMenuItemClickListener(
+				new OnMenuItemClickListener() {
+							@Override
+							public boolean onMenuItemClick(MenuItem item) {
+					            Intent WifiSettingsActivity = new Intent(getBaseContext(), WifiSettings.class);
+					            startActivity(WifiSettingsActivity);
+					            return true;
+							}
+		});
 		
 		// Settings Item
-		MenuItem settingsMenuItem = menu.add(BASE_GROUP_ID, // Group ID
-									BASE_ITEM_ID,  // Item ID
-									BASE_ORDER_ID, 	// Order ID			
-									resources.getString(R.string.menu_settings)); // Title
+		MenuItem settingsMenuItem = menu.add(base_group_id++, // Group ID
+											base_item_id++,  // Item ID
+											base_order_id++, 	// Order ID			
+											mResources.getString(R.string.menu_settings)); // Title
 		
 		
 		settingsMenuItem.setIcon(R.drawable.settings_48);
@@ -286,10 +307,10 @@ public class WiFiConnect extends Activity {
 		});
 		
 		// About Item
-		MenuItem aboutMenuItem = menu.add(BASE_GROUP_ID, // Group ID
-									BASE_ITEM_ID+1,  // Item ID
-									BASE_ORDER_ID+1, 	// Order ID			
-									resources.getString(R.string.menu_about)); // Title
+		MenuItem aboutMenuItem = menu.add(base_group_id++, // Group ID
+										base_item_id++,  // Item ID
+										base_order_id++, 	// Order ID			
+									mResources.getString(R.string.menu_about)); // Title
 
 		aboutMenuItem.setIcon(R.drawable.light_48);
 		
@@ -306,10 +327,10 @@ public class WiFiConnect extends Activity {
 		
 		
 		// Quit Item
-		MenuItem quitMenuItem = menu.add(BASE_GROUP_ID, // Group ID
-									BASE_ITEM_ID+2,  // Item ID
-									BASE_ORDER_ID+2, 	// Order ID			
-									resources.getString(R.string.menu_quit)); // Title
+		MenuItem quitMenuItem = menu.add(base_group_id++, // Group ID
+										base_item_id++,  // Item ID
+										base_order_id++, 	// Order ID			
+									mResources.getString(R.string.menu_quit)); // Title
 		
 		quitMenuItem.setIcon(R.drawable.exit_48);
 		
@@ -324,14 +345,4 @@ public class WiFiConnect extends Activity {
 
 		return true;
 	}
-	
-//	@Override
-//	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-//		super.onMenuItemSelected(featureId, item);
-//		
-//		return true;
-//	}
-	
-
-
 }

@@ -1,7 +1,7 @@
 package com.wifi.sapguestconnect.preferences;
 
-import com.wifi.sapguestconnect.LogHelper;
 import com.wifi.sapguestconnect.R;
+import com.wifi.sapguestconnect.log.LogHelper;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -110,14 +110,6 @@ public class SettingsActivity extends PreferenceActivity
 		
         Preference startAtBootPref = getPreferenceByKey (R.string.pref_settings_start_at_boot_key);
         startAtBootPref.setDependency(resources.getString(R.string.pref_settings_run_as_service_key));
-	}
-	
-	private void initEnableConnectSoundPreferenceUI()
-	{
-		// Log
-		logHelper.toLog(isLogEnabled, "SettingsActivity -> initEnableConnectSoundPreferenceUI () started.");
-		
-		// Does nothing
 	}
 	
 	private void initRingtonePreferenceUI()

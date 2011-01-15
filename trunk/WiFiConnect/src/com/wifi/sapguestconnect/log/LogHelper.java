@@ -1,4 +1,4 @@
-package com.wifi.sapguestconnect;
+package com.wifi.sapguestconnect.log;
 
 import java.io.File;
 import java.io.FileWriter;

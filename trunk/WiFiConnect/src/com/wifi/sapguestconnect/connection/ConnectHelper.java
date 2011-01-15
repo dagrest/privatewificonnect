@@ -1,4 +1,4 @@
-package com.wifi.sapguestconnect;
+package com.wifi.sapguestconnect.connection;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,22 +17,23 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.wifi.sapguestconnect.ErrorMessages.errorMessages;
+import com.wifi.sapguestconnect.LoginData;
+import com.wifi.sapguestconnect.data.DataBaseHelper;
+import com.wifi.sapguestconnect.log.LogHelper;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.SQLException;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
-public class ConnectHelper {
+public class ConnectHelper { // TODO remove PUBLIC modifier
 	
+	private final int MAX_LOGIN_ATTEMPTS = 3; 
     private final String MY_DATABASE_TABLE = "DataTable";
 	private Context context;
     private LoginData loginData = new LoginData();
     private boolean isLoginDataChanged = false;
-	ProgressDialog progressDialog = null;
 	private LogHelper logHelper;
 	private boolean isLogEnabled;
 	private WifiManager wm = null;
@@ -42,6 +43,8 @@ public class ConnectHelper {
     	this.wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);	
     	logHelper = LogHelper.getLog();
     	isLogEnabled = logHelper.isLogEnabled();
+    	
+    	LoadLoginData();
     }
 	
     public ConnectHelper(final Context context, final WifiManager wm){
@@ -49,13 +52,15 @@ public class ConnectHelper {
     	this.wm = wm;
     	logHelper = LogHelper.getLog();
     	isLogEnabled = logHelper.isLogEnabled();
+    	
+    	LoadLoginData();
     }
     
 	boolean isLoginDataChanged() {
 		return isLoginDataChanged;
 	}
 
-	LoginData getLoginData(){
+	public LoginData getLoginData(){ // TODO make private
 		return loginData;
 	}
 	
@@ -87,7 +92,7 @@ public class ConnectHelper {
     		return false;
     }
     
-	void saveLoginData(final String user, final String pass, final String netID){
+	public void saveLoginData(final String user, final String pass, final String netID){
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() started.");
 		DataBaseHelper myDbHelper = new DataBaseHelper(context);
 		try {
@@ -115,7 +120,7 @@ public class ConnectHelper {
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() ended.");
 	}
 
-	public boolean LoadLoginData() {
+	public boolean LoadLoginData() { // TODO move to a different class
 		boolean retCode = false;
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> LoadLoginData() started.");
 		DataBaseHelper myDbHelper = new DataBaseHelper(context);
@@ -158,54 +163,13 @@ public class ConnectHelper {
     	return retCode;
     }
 
-//	void ProgressBarDialog(Context context, boolean toShowDialog){
-//		ProgressDialog progressDialog = null;
-//		if(toShowDialog == true){
-//			progressDialog = new ProgressDialog(context);
-//			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//			progressDialog.setMessage("Please wait...");
-//			progressDialog.setCancelable(false);
-//		}
-//		else{
-//			progressDialog.dismiss();
-//		}
-//	}
-	
-	boolean isLoggedInToSAPWithProgress(){
-    	logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedInToSAPWithProgress() started.");
-    	boolean isLoggedIn = false;
 
-		progressDialog = new ProgressDialog(context);
-		progressDialog.setCancelable(true);
-		progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		progressDialog.setMessage("Connecting ...");
-		progressDialog.setTitle("Please wait...");
-		progressDialog.setIndeterminate(true);
-		progressDialog.show();
-		//progressDialog = ProgressDialog.show(context, "Please wait...", "Connecting ...", true, true);
-		
-		new Thread() {
-            public void run() {
-                try{
-                    // Do some Fake-Work
-		        	sleep(5000);
-		        }
-	            catch (Exception e) 
-	            { 
-	            	
-	            }
-	            // Dismiss the Dialog
-	            progressDialog.dismiss();
-            }
-		}.start();
-		
-    	logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedInToSAPWithProgress() ended.");
-		return isLoggedIn;
-	}
+
 	
 	public boolean isLoggedInToSAP(){
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedInToSAP() started.");
-		boolean isLoggedInToSAP = false; 
+		boolean isLoggedInToSAP = false;
+		
 		if(ifWifiEnabled() == true){
 			String connUrl = "https://www.google.com";
             
@@ -226,7 +190,7 @@ public class ConnectHelper {
 		return isLoggedInToSAP;
 	}
 	
-	public errorMessages loginToSAPWiFi(){
+	private ConnectionErrorMessages loginToSAPWiFi(){
     	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() started.");
     	if(ifWifiEnabled() == true){
             String macAddress = getMacAddress();
@@ -241,27 +205,47 @@ public class ConnectHelper {
     	        if(isLoggedIn(httpsConnection)){
     	        	//show message login succeeded
     	        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
-    	        	return errorMessages.SUCCESS;
+    	        	return ConnectionErrorMessages.SUCCESS;
     	        }
     	        else{
     	        	//show message login failed
-    	        	//statusText.setTextColor(0xFF000000);
-    	        	//setValue(statusText, "Login FAILED.");
     	        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
-    	        	return errorMessages.FAILED;
+    	        	return ConnectionErrorMessages.FAIL;
     	        }
             }
             else{
             	//show message that it is not SAP WiFi currently connected
 	        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
-            	return errorMessages.NOT_CORRECT_WIFI;
+            	return ConnectionErrorMessages.UNKNOWN_WIFI;
             }
         }
         else{
-        	//setValue(statusText, "WiFI is turned off.");
         	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
-        	return errorMessages.WIFI_TURNED_OFF;
+        	return ConnectionErrorMessages.WIFI_TURNED_OFF;
         }
+	}
+	
+	public ConnectionErrorMessages connectToWifi()
+	{
+    	int attemptNumber = 0;
+    	ConnectionErrorMessages lastLoginStatus = ConnectionErrorMessages.SUCCESS;
+    	
+    	while ((!isLoggedInToSAP()) && (attemptNumber < MAX_LOGIN_ATTEMPTS))
+    	{
+    		attemptNumber++;
+    		lastLoginStatus = loginToSAPWiFi();
+    		if (lastLoginStatus != ConnectionErrorMessages.FAIL)
+    		{
+    			break;
+    		}
+    	}
+    	
+    	if ((attemptNumber >= MAX_LOGIN_ATTEMPTS) && (!isLoggedInToSAP()))
+    	{
+    		logHelper.toLog(isLogEnabled, "AutoconnectService -> ConnectionTimerTask -> Failed To Connect.");
+    	}
+		
+		return lastLoginStatus;
 	}
 	
 	HttpsURLConnection openConnectionToHTTPS(String connUrl)
@@ -453,6 +437,36 @@ public class ConnectHelper {
 		}
 		logHelper.toLog(isLogEnabled, "ConnectHelper -> getIPAddress() ended.");		
 		return strIP;
+	}
+	
+	
+	/******
+	 * Statics
+	 */
+	
+	public static ConnectionStatus IsOnline(Context context)
+	{
+		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);	
+		ConnectHelper connectHelper = new ConnectHelper(context);
+		boolean isOnline = connectHelper.isLoggedInToSAP();
+		boolean isCorrectWifi = connectHelper.isConnectedToCorrectWiFi();
+		boolean isWifiEnabled = wifiManager.isWifiEnabled();
+		
+		if (!isWifiEnabled)
+		{
+			return ConnectionStatus.WIFI_DISABLED;
+		}
+		else if (isOnline)
+		{
+			if (isCorrectWifi)
+				return ConnectionStatus.CONNECTED;
+			else
+				return ConnectionStatus.CONNECTED_UNKNOWN_WIFI;
+		}
+		else
+		{
+			return ConnectionStatus.NOT_CONNECTED;
+		}
 	}
 	  
 }

@@ -30,7 +30,7 @@ class NotificationHelper
     	
         Notification notification = new Notification(R.drawable.sap_connect, summary, System.currentTimeMillis());
  
-        PendingIntent contentIntent =  PendingIntent.getActivity(context, 0, new Intent(context, WiFiConnect.class), 0); 
+        PendingIntent contentIntent =  PendingIntent.getActivity(context, 0, new Intent(context, WiFiConnect.class), 0); // TODO get class name from Manifest
  
         notification.setLatestEventInfo(context, title, summary, contentIntent); 
         notification.flags |= Notification.FLAG_ONGOING_EVENT;
@@ -55,13 +55,7 @@ class NotificationHelper
         notificationMgr.notify(id, notification);
         isNotificationSet = true;
     }
-    
-    private void clearNotification(Context context, int id)
-    {
-    	notificationMgr.cancel(id);
-    	isNotificationSet = false;
-    }
-    
+        
     private void clearAllNotifications(Context context)
     {
     	notificationMgr.cancelAll();

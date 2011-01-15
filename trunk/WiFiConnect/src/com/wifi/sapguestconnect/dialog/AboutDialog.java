@@ -1,4 +1,7 @@
-package com.wifi.sapguestconnect;
+package com.wifi.sapguestconnect.dialog;
+
+import com.wifi.sapguestconnect.R;
+import com.wifi.sapguestconnect.common.CommonFacade;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -15,7 +18,7 @@ public class AboutDialog
 
 		// Set Title
 		dialog.setContentView(R.layout.about_dialog);
-		dialog.setTitle(resources.getString(R.string.app_name));
+		dialog.setTitle(resources.getString(R.string.app_name)+" "+CommonFacade.getVersionName(context));
 
 		// Set Text
 		TextView text = (TextView) dialog.findViewById(R.id.text);
@@ -25,6 +28,10 @@ public class AboutDialog
 		ImageView image = (ImageView) dialog.findViewById(R.id.image);
 		image.setImageResource(R.drawable.sap_connect);
 		
+		// Make dialog cancellable on touch outside;
+		dialog.setCanceledOnTouchOutside(true);
+		
 		dialog.show();
 	}
+
 }

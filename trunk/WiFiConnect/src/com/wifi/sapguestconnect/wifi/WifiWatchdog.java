@@ -1,6 +1,6 @@
 package com.wifi.sapguestconnect.wifi;
 
-import com.wifi.sapguestconnect.ConnectHelper;
+import com.wifi.sapguestconnect.connection.ConnectHelper;
 import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 import com.wifi.sapguestconnect.service.AutoconnectService;
 
