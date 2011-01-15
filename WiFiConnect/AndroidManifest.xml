@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest 
 	package="com.wifi.sapguestconnect"
-    xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.21 Alpha" android:versionCode="21">
+    xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.31 Alpha" android:versionCode="31">
     <application 
-    	android:label="@string/app_name" android:debuggable="true" android:icon="@drawable/sap_connect">
-        <activity android:name=".WiFiConnect"
-                  android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+    	android:label="@string/app_name" android:debuggable="false" android:icon="@drawable/sap_connect">
 
     <activity android:name=".preferences.SettingsActivity"></activity>
 <service android:name=".service.AutoconnectService"></service>
@@ -21,6 +14,17 @@
 		<category android:name="android.intent.category.HOME" />
 	</intent-filter>
 </receiver>
+<activity android:name="WifiSettings">
+	<intent-filter>
+
+	</intent-filter>
+</activity>
+<activity android:name="WiFiConnect">
+	<intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+       <category android:name="android.intent.category.LAUNCHER" />
+	</intent-filter>
+</activity>
 </application>
     <uses-sdk android:minSdkVersion="3" />
 
@@ -28,4 +32,5 @@
 
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
 <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE"></uses-permission>
 </manifest> 

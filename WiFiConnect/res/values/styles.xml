@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="Main">
+		<item name="android:orientation">vertical</item>
+		<item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:background">@drawable/background</item>
+	</style>
+
+    <style name="Entry" >
+		<!-- Styles: http://android.git.kernel.org/?p=platform/frameworks/base.git;a=tree;f=core/res/res/drawable;hb=HEAD -->
+    	<item name="android:background">@android:drawable/menuitem_background</item>
+		<item name="android:focusable">true</item>
+		<item name="android:clickable">true</item>
+		<item name="android:textAppearance">?android:attr/textAppearanceSmallInverse</item>
+		<item name="android:textColor">@android:color/primary_text_light</item>
+		<!-- <item name="android:gravity">center_vertical|center_horizontal</item> -->
+		
+    	<item name="android:minHeight">50dp</item>
+		<item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">3dp</item>
+		<item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+    
+    <style name="MenuItemImage" >
+    	<item name="android:layout_width">50px</item>
+    	<item name="android:layout_height">50px</item>
+    	<item name="android:layout_alignParentRight">true</item>
+    </style>
+    
+    <style name="MenuItemImage.More" >
+    	<item name="android:src">@drawable/menuitem_more</item>
+    </style>
+
+    <style name="Title" parent="@android:style/TextAppearance.Large">
+        <!--<item name="android:textSize">30sp</item> -->
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">10dp</item>
+    	<item name="android:layout_marginRight">10dp</item>
+        <item name="android:typeface">monospace</item>
+    </style>
+
+    <style name="Summary" parent="@android:style/TextAppearance.Small">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_marginLeft">10dp</item>
+    	<item name="android:layout_marginRight">10dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:typeface">monospace</item>
+    </style>     
+    
+    <style name="Seperator">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">#504A4B</item>
+    </style>
+
+    <style name="Dialog" />
+    
+    <style name="Dialog.Main">
+    	<item name="android:orientation">vertical</item>
+		<item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">#FFFFFF</item>
+        <item name="android:paddingTop">5px</item>
+        <item name="android:paddingBottom">5px</item>
+        <item name="android:paddingLeft">5px</item>
+        <item name="android:paddingRight">5px</item>
+    </style>
+    
+    <style name="Dialog.Button">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">100px</item>
+    </style>
+    
+    <style name="Dialog.Text">
+    	<item name="android:textColor">#000000</item>
+    </style>    
+    
+    
+</resources>

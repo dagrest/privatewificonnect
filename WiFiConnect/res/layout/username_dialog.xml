@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+				style="@style/Dialog.Main" >
+               
+    <EditText
+        android:id="@+id/username_input"
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent" />
+        
+    <LinearLayout	android:orientation="horizontal"
+    				android:layout_height="wrap_content"
+    				android:layout_width="fill_parent" >
+    	<Button android:id="@+id/ok_button"
+    			android:text="@string/ok"
+    			style="@style/Dialog.Button" />
+    	<Button android:id="@+id/cancel_button"
+    			android:text="@string/cancel"
+    			style="@style/Dialog.Button" />
+    </LinearLayout>
+  
+</LinearLayout>
