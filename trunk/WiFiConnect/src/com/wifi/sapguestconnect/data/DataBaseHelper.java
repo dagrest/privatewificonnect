@@ -129,8 +129,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     		
     		result.close();
     	}
-    	catch (SQLException e) {
-    		//TODO error message to log
+    	catch (SQLException e) 
+    	{
     		logHelper.toLog(isLogEnabled, "EXCEPTION: DataBaseHelper -> getLoginData(): " + e.getMessage());
     	}
     	    	

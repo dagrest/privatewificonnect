@@ -131,7 +131,7 @@ public class WiFiConnect extends Activity
 	    setViewOnClickListener(R.id.connect_button, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				WiFiConnect.this.displayToastMessage(mResources.getString(R.string.connecting)); // TODO Use Resource
+				WiFiConnect.this.displayToastMessage(mResources.getString(R.string.connecting));
 				
 				ConnectionFacade.ConnectAsync(WiFiConnect.this, mLoginData, new IConnectionAttemptResponse() 
 				{					

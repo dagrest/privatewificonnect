@@ -12,7 +12,7 @@ import android.widget.TextView;
 public class AboutDialog 
 {
 	public static void show(Context context)
-	{
+	{		
 		Resources resources = context.getResources();
 		Dialog dialog = new Dialog(context);
 

@@ -9,7 +9,6 @@ import com.wifi.sapguestconnect.log.LogHelper;
 import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
