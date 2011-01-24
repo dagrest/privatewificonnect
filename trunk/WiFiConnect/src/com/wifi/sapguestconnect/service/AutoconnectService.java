@@ -56,12 +56,7 @@ public class AutoconnectService extends Service
 		// Init Log
 		logHelper = LogHelper.getLog();
 		isLogEnabled = logHelper.isLogEnabled();
-	
-		// Log
 		logHelper.toLog(isLogEnabled, "AutoconnectService -> onCreate() started.");
-		
-		// Log
-		logHelper.toLog(isLogEnabled, "AutoconnectService -> onCreate () started.");
 		
 		// Init Super
 		super.onCreate();

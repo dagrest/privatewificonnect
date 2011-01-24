@@ -61,9 +61,6 @@ public class WiFiConnect extends Activity
 		// Init Resources
 		this.mResources = this.getResources();
 		
-		// Load Login Data
-		this.mLoginData= DataFacade.LoadLoginData(this);
-		
 		AutoUpdater.CheckForUpdate(this);
 		
 		// Init Layout
@@ -198,6 +195,9 @@ public class WiFiConnect extends Activity
 		super.onResume();
 		
 		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> onResume()");
+		
+		// Refresh Login Data
+		this.mLoginData= DataFacade.LoadLoginData(this);
 		
 		refreshConnectionStatus();
 	}
