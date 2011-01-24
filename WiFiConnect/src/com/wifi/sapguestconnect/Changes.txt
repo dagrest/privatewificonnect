@@ -1,2 +1,0 @@
-Version 2:
-1. Lock screen orientation to vertical (13/05/2010)

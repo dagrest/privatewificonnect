@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import java.util.Date;
 import android.util.Log;
 
@@ -16,8 +17,11 @@ public class LogHelper {
 	private static final String configFile = "config.dat";
 	private static LogHelper instance;
 	private static boolean isLogEnabled;
+	private Object lockMe = null;
 	
 	private LogHelper(){
+		lockMe = new Object();
+		
 		checkIsLogEnabled();
 		if(isLogEnabled() == true){
 			// create a File object for the log directory
@@ -29,9 +33,9 @@ public class LogHelper {
 	
 			File logFile = new File(logDirectoryPath + logFileName);
 			if(logFile.exists()){
-				logFile.delete();
+				//logFile.delete();
 			}
-			this.toLog(true, new Date().toString() + "\n");
+			
 		}
 	}
 	
@@ -43,20 +47,34 @@ public class LogHelper {
 	}
 	
 	public void toLog(final boolean isLogEnabled, final String logMessage){
-		PrintWriter pw;
-		if(isLogEnabled == true){
-		    try {
-//		        pw = new PrintWriter(
-//		                new FileWriter(Environment.getExternalStorageDirectory()+File.separator+logName, true));
-		        pw = new PrintWriter(
-		                new FileWriter(logDirectoryPath + File.separator +logFileName, true));
-		        //ex.printStackTrace(pw);
-		        pw.println(logMessage);
-		        pw.flush();
-		        pw.close();
-		    } catch (IOException e) {
-		    	Log.e("WiFiConnect: LogHelper->toLog", e.toString());
-		    }
+		
+		if(isLogEnabled == true)
+		{
+			final String timeStamp = getTimestamp();
+			Thread t = new Thread(new Runnable() { // TODO Change to Threadpool
+				
+			@Override
+			public void run() 
+			{
+				synchronized(lockMe)
+				{
+					try {
+						PrintWriter pw = new PrintWriter(
+				                new FileWriter(logDirectoryPath + File.separator +logFileName, true));
+				        //ex.printStackTrace(pw);
+						
+						
+				        pw.println(timeStamp+" "+logMessage);
+				        pw.flush();
+				        pw.close();
+				    } catch (IOException e) {
+				    	Log.e(timeStamp+" WiFiConnect: LogHelper->toLog", e.toString());
+					}
+				} // of syncrhonized
+			} // of run()
+			}); // of new Runnable()	
+			
+			t.start();
 		}
 	}
 	
@@ -72,5 +90,18 @@ public class LogHelper {
 	
 	public boolean isLogEnabled(){
 		return isLogEnabled;
+	}
+	
+	private String getTimestamp()
+	{
+		Calendar now = Calendar.getInstance();
+		int day = now.get(Calendar.DAY_OF_MONTH);
+		int month = now.get(Calendar.MONTH) - Calendar.JANUARY +1;
+		int year = now.get(Calendar.YEAR);
+		int hour = now.get(Calendar.HOUR_OF_DAY);
+		int minute = now.get(Calendar.MINUTE);
+		int second = now.get(Calendar.SECOND);
+		
+		return "["+year+"."+month+"."+day+" "+hour+":"+minute+":"+second+"]";
 	}
 }

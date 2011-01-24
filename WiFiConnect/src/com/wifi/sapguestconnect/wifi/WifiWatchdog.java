@@ -1,6 +1,7 @@
 package com.wifi.sapguestconnect.wifi;
 
 import com.wifi.sapguestconnect.connection.ConnectHelper;
+import com.wifi.sapguestconnect.log.LogHelper;
 import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 import com.wifi.sapguestconnect.service.AutoconnectService;
 
@@ -17,11 +18,20 @@ class WifiWatchdog extends BroadcastReceiver
 	private WifiManager mWifiManager;
 	private ConnectHelper mConnectHelper;
 	private Context mContext;
+	private LogHelper mLogHelper;
+	private boolean isLogEnabled = false;
 	
 	private WifiWatchdog(Context context)
 	{
 		mContext = context;
-		mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);	
+		
+		// Init Log
+	    mLogHelper = LogHelper.getLog();
+		isLogEnabled = mLogHelper.isLogEnabled();
+		mLogHelper.toLog(isLogEnabled , "WifiWatchdog -> C'tor()");
+		
+		mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+		
 		mConnectHelper = new ConnectHelper(context, mWifiManager);
 		mConnectHelper.LoadLoginData();
 	}
@@ -40,6 +50,8 @@ class WifiWatchdog extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) 
     {
+    	mLogHelper.toLog(isLogEnabled , "WifiWatchdog -> onReceive()");
+    	
         final String action = intent.getAction();
         if (action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)) 
         {
@@ -56,7 +68,8 @@ class WifiWatchdog extends BroadcastReceiver
 
     private void handleNetworkStateChanged(NetworkInfo info) 
     {
-        
+    	mLogHelper.toLog(isLogEnabled , "WifiWatchdog -> handleNetworkStateChanged()");
+    	
         switch (info.getState()) 
         {
             case CONNECTED:
@@ -75,6 +88,8 @@ class WifiWatchdog extends BroadcastReceiver
 
 	private void handleSupplicantConnectionChanged(boolean connected) 
     {
+		mLogHelper.toLog(isLogEnabled , "WifiWatchdog -> handleSupplicantConnectionChanged()");
+		
         if (!connected) 
         {
             onDisconnected();
@@ -83,6 +98,8 @@ class WifiWatchdog extends BroadcastReceiver
 
 	private void handleWifiStateChanged(int wifiState) 
     {
+		mLogHelper.toLog(isLogEnabled , "WifiWatchdog -> handleWifiStateChanged()");
+		
         if (wifiState == WifiManager.WIFI_STATE_DISABLED) 
         {
             onDisconnected();
@@ -95,20 +112,39 @@ class WifiWatchdog extends BroadcastReceiver
 	
     private void onConnected(String ssid, String bssid) 
     {
-    	mConnectHelper.LoadLoginData(); // should refactor - maybe create a singleton 
-    	if (mConnectHelper.isConnectedToCorrectWiFi(ssid))
+    	try
     	{
-    		PreferencesFacade.refreshRunAsService(mContext);
+        	mLogHelper.toLog(isLogEnabled , "WifiWatchdog -> onConnected("+ssid+")");
+        	
+        	mConnectHelper.LoadLoginData(); // should refactor - maybe create a singleton 
+        	if (mConnectHelper.isConnectedToCorrectWiFi(ssid))
+        	{
+        		PreferencesFacade.refreshRunAsService(mContext);
+        	}
+        	else
+        	{
+        		AutoconnectService.Stop(mContext);
+        	}
     	}
-    	else
+    	catch (Exception e)
     	{
-    		AutoconnectService.Stop(mContext);
+    		mLogHelper.toLog(isLogEnabled , "EXCEPTION: WifiWatchdog -> onConnected("+ssid+"): " + e.getMessage() + " : " + e.getStackTrace());
     	}
+
 	}
 	
     private void onDisconnected() 
     {
-    	AutoconnectService.Stop(mContext);
+    	try
+    	{
+        	mLogHelper.toLog(isLogEnabled , "WifiWatchdog -> onDisconnected()");
+        	
+        	AutoconnectService.Stop(mContext);
+    	}
+    	catch (Exception e)
+    	{
+    		mLogHelper.toLog(isLogEnabled , "EXCEPTION: WifiWatchdog -> onDisconnected(): " + e.getMessage() + " : " + e.getStackTrace());
+    	}
 	}
 
 }

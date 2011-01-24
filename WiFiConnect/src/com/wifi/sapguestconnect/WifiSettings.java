@@ -6,6 +6,7 @@ import com.wifi.sapguestconnect.dialog.PasswordDialog;
 import com.wifi.sapguestconnect.dialog.SelectNetworkListener;
 import com.wifi.sapguestconnect.dialog.UsernameDialog;
 import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -223,5 +224,13 @@ public class WifiSettings extends Activity
 		mLogHelper.toLog(isLogEnabled, "WifiSettings -> persistLoginData()");
 		
 	    DataFacade.PersistLoginData(this, mLoginData);
+	}
+	
+	@Override
+	protected void onPause() 
+	{
+		super.onPause();
+		
+		PreferencesFacade.refreshRunAsService(this);
 	}
 }
