@@ -3,18 +3,15 @@ package com.wifi.sapguestconnect.preferences.location;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.wifi.sapguestconnect.R;
 import com.wifi.sapguestconnect.log.LogHelper;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 public class LocationManager 
 {
 	private static LocationManager instance = null;
 	
 	private Context mContext = null;
-	private Resources mResources = null;
 	private Map<String, ILocation> mLocationStrategy = null;
 	private LogHelper mLogHelper = null;
 	private boolean isLogEnabled = false;
@@ -23,7 +20,6 @@ public class LocationManager
 	private LocationManager(Context context)
 	{
 		mContext = context;
-		mResources = mContext.getResources();
 		mLocationStrategy = new HashMap<String, ILocation>();
 	    
 		// Init Log
@@ -39,8 +35,13 @@ public class LocationManager
 	{
 		mLogHelper.toLog(isLogEnabled, "LocationManager -> initStrategy()");
 		
-		mLocationStrategy.put(mResources.getString(R.string.israel_code), new LocationIL());
-		mLocationStrategy.put(mResources.getString(R.string.germany_code), new LocationDE());
+		addNewStrategyEntry(new LocationIL(mContext));
+		addNewStrategyEntry(new LocationDE(mContext));
+	}
+	
+	private void addNewStrategyEntry(ILocation location)
+	{
+		mLocationStrategy.put(location.getLocationCode(), location);
 	}
 	
 	private ILocation getLocation(String locationId)
@@ -51,7 +52,7 @@ public class LocationManager
 		if (location == null)
 		{
 			mLogHelper.toLog(isLogEnabled, "EXCEPTION: LocationManager -> getLocation("+locationId+")"+" Strategy Returned NULL. Using Fallback.");
-			location = new LocationIL(); // Fallback
+			location = new LocationIL(mContext); // Fallback
 		}
 		
 		return location;
