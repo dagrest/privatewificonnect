@@ -2,7 +2,7 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android" android:key="WifiConnectPreferences">
 
-    <PreferenceCategory android:title="@string/pref_connection_settings_category" android:key="@string/pref_connection_settings_category_key">
+    <PreferenceCategory android:title="@string/pref_application_settings_category" android:key="@string/pref_application_settings_category_key">
         <CheckBoxPreference
             android:defaultValue="true"
             android:title="@string/pref_settings_run_as_service"
@@ -22,6 +22,18 @@
             android:summary="@string/pref_settings_start_at_boot_summary"/>
             
     </PreferenceCategory>
+    
+    <PreferenceCategory android:title="@string/pref_connection_settings_category" android:key="@string/pref_connection_settings_category_key">
+    
+    <ListPreference
+				android:key="@string/pref_settings_location_key" 
+			    android:title="@string/pref_settings_location" 
+			    android:summary="@string/pref_settings_location_summary" 
+			    android:entries="@array/location_text" 
+			    android:entryValues="@array/location_id" 
+			    android:dialogTitle="@string/pref_settings_location_dialog_title" 
+			    android:defaultValue="@string/pref_settings_location_default_value" />
+    </PreferenceCategory>   
     
     <PreferenceCategory android:title="@string/pref_additional_settings_category" android:key="@string/pref_additional_settings_category_key">
            

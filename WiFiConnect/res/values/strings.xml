@@ -5,6 +5,8 @@
 
 
 
+<string name="pref_application_settings_category">Application settings</string>
+<string name="pref_application_settings_category_key">applicationSettings</string>
 <string name="pref_connection_settings_category">Connection settings</string>
 <string name="pref_connection_settings_category_key">connectionSettings</string>
 <string name="pref_additional_settings_category">Additional settings</string>
@@ -62,4 +64,18 @@
 <string name="unknown_wifi">Unknown Wifi. Unable to connect.</string>
 <string name="already_connected">Already connected.</string>
 <string name="wifi_disabled">Wifi disabled. Unable to connect.</string>
+
+<array name="location_text">
+	<item>@string/israel</item>
+	<item>@string/germany</item>
+</array>
+<string-array name="location_id">
+	<item>@string/israel_code</item>
+	<item>@string/germany_code</item>
+</string-array>
+<string name="pref_settings_location_default_value">IL</string>
+<string name="pref_settings_location">Location</string>
+<string name="pref_settings_location_summary">Choose your location</string>
+<string name="pref_settings_location_key">location</string>
+<string name="pref_settings_location_dialog_title">Location</string>
 </resources>

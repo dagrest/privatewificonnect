@@ -20,6 +20,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import com.wifi.sapguestconnect.LoginData;
 import com.wifi.sapguestconnect.data.DataBaseHelper;
 import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 
 import android.content.Context;
 import android.database.SQLException;
@@ -195,8 +196,9 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
     	if(ifWifiEnabled() == true){
             String macAddress = getMacAddress();
             String ipAddress = getIPAddress();
+            String hostName = PreferencesFacade.getLocation(context).getConnectionHostName();
             // "https://wlan.sap.com/cgi-bin/login?cmd=login&mac=00:18:de:14:20:91&ip=192.168.143.135&essid=SAP-Guest&url=http%3A%2F%2Fwww%2Egoogle%2Ecom%2F";
-            String connUrl = "https://wlan.sap.com/cgi-bin/login?cmd=login&mac=" + macAddress + "&ip=" + ipAddress + 
+            String connUrl = "https://"+hostName+"/cgi-bin/login?cmd=login&mac=" + macAddress + "&ip=" + ipAddress + 
                              "&essid=SAP-Guest&url=http://www.google.com";
 
             if(getSSID().equals(loginData.getSSID())){
@@ -302,7 +304,7 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 			httpsConnection.setRequestProperty("Accept", "*/*");
 			httpsConnection.setRequestProperty("Accept-Language", "en-gb");
 			httpsConnection.setRequestProperty("Accept-Encoding", "gzip, deflate");
-			httpsConnection.setRequestProperty("Host", "wlan.sap.com");
+			httpsConnection.setRequestProperty("Host", PreferencesFacade.getLocation(context).getConnectionHostName());
 			httpsConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 		}
 		catch(Exception e)

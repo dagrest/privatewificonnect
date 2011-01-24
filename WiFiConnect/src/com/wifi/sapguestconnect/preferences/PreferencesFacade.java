@@ -2,6 +2,8 @@ package com.wifi.sapguestconnect.preferences;
 
 import com.wifi.sapguestconnect.R;
 import com.wifi.sapguestconnect.notification.NotificationManager;
+import com.wifi.sapguestconnect.preferences.location.ILocation;
+import com.wifi.sapguestconnect.preferences.location.LocationManager;
 import com.wifi.sapguestconnect.service.AutoconnectService;
 
 import android.content.Context;
@@ -64,6 +66,11 @@ public class PreferencesFacade
 	public static Uri getRingtone(Context context)
 	{
 		return getPrefUriValueByResource(context, R.string.pref_settings_ringtone_key, "DEFAULT_RINGTONE_URI");
+	}
+	
+	public static ILocation getLocation(Context context)
+	{
+		return LocationManager.getLocation(context, getPrefStringValueByResource(context, R.string.pref_settings_location_key, context.getResources().getString(R.string.pref_settings_location_default_value) ));
 	}
 	
 	public static boolean isEnableConnectVibration(Context context)
