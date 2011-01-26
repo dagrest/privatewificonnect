@@ -26,8 +26,13 @@
 	</intent-filter>
 </activity>
 </application>
-    <uses-sdk android:minSdkVersion="3" />
-
+    <uses-sdk android:minSdkVersion="4" />
+	<supports-screens
+      android:smallScreens="true"
+      android:normalScreens="true"
+      android:largeScreens="true"
+      android:anyDensity="true"
+    />
 	<uses-permission android:name="android.permission.INTERNET" />
 
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
