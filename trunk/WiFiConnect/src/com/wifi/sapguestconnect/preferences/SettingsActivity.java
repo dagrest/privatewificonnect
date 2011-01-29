@@ -1,7 +1,7 @@
 package com.wifi.sapguestconnect.preferences;
 
 import com.wifi.sapguestconnect.R;
-import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.log.LogManager;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -11,19 +11,13 @@ import android.preference.Preference.OnPreferenceClickListener;
 
 public class SettingsActivity extends PreferenceActivity 
 {
-    private LogHelper logHelper;
-    private boolean isLogEnabled;
     private Resources resources;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
-		// Init Log
-		logHelper = LogHelper.getLog();
-		isLogEnabled = logHelper.isLogEnabled();
-		
 		// Log
-		logHelper.toLog(isLogEnabled, "SettingsActivity -> onCreate () started.");
+		LogManager.LogFunctionCall("SettingsActivity", "onCreate()");
 		
 		// super
 		super.onCreate(savedInstanceState);
@@ -68,7 +62,7 @@ public class SettingsActivity extends PreferenceActivity
 	private void initRunAsServicePreferenceUI()
 	{
 		// Log
-		logHelper.toLog(isLogEnabled, "SettingsActivity -> initRunAsServicePreference () started.");
+		LogManager.LogFunctionCall("SettingsActivity", "initRunAsServicePreferenceUI()");
 		
 		Preference runAsServicePref = getPreferenceByKey (R.string.pref_settings_run_as_service_key);
 		
@@ -87,7 +81,7 @@ public class SettingsActivity extends PreferenceActivity
 	private void initShowIconPreferenceUI()
 	{
 		// Log
-		logHelper.toLog(isLogEnabled, "SettingsActivity -> initShowIconPreference () started.");
+		LogManager.LogFunctionCall("SettingsActivity", "initShowIconPreferenceUI()");
 		
 		Preference showIconPref = getPreferenceByKey (R.string.pref_settings_show_icon_key);
 		
@@ -106,7 +100,7 @@ public class SettingsActivity extends PreferenceActivity
 	private void initStartAtBootPreferenceUI()
 	{
 		// Log
-		logHelper.toLog(isLogEnabled, "SettingsActivity -> initStartAtBootPreference () started.");
+		LogManager.LogFunctionCall("SettingsActivity", "initStartAtBootPreferenceUI()");
 		
         Preference startAtBootPref = getPreferenceByKey (R.string.pref_settings_start_at_boot_key);
         startAtBootPref.setDependency(resources.getString(R.string.pref_settings_run_as_service_key));
@@ -115,7 +109,7 @@ public class SettingsActivity extends PreferenceActivity
 	private void initRingtonePreferenceUI()
 	{
 		// Log
-		logHelper.toLog(isLogEnabled, "SettingsActivity -> initRingtonePreferenceUI () started.");
+		LogManager.LogFunctionCall("SettingsActivity", "initRingtonePreferenceUI()");
 
         Preference enableConnectSoundPref = getPreferenceByKey (R.string.pref_settings_ringtone_key);
         enableConnectSoundPref.setDependency(resources.getString(R.string.pref_settings_enable_connection_sound_key));		
@@ -124,7 +118,7 @@ public class SettingsActivity extends PreferenceActivity
 	private Preference getPreferenceByKey(int preferenceKey)
 	{
 		// Log
-		logHelper.toLog(isLogEnabled, "SettingsActivity -> getPreferenceByKey () started.");
+		LogManager.LogFunctionCall("SettingsActivity", "preferenceKey()");
 		
 		String preferenceKeyStr = resources.getString(preferenceKey);
 		
@@ -135,6 +129,8 @@ public class SettingsActivity extends PreferenceActivity
 	protected void onResume() 
 	{
 		super.onResume();
+		
+		LogManager.LogFunctionCall("SettingsActivity", "onResume()");
 	}
 	
 }

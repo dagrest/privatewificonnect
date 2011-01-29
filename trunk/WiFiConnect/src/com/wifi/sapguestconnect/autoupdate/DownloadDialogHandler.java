@@ -1,5 +1,7 @@
 package com.wifi.sapguestconnect.autoupdate;
 
+import com.wifi.sapguestconnect.log.LogManager;
+
 import android.os.Handler;
 import android.os.Message;
 
@@ -9,12 +11,16 @@ class DownloadDialogHandler extends Handler
 	
 	public DownloadDialogHandler(DownloadDialog downloadDialog) 
 	{
+		LogManager.LogFunctionCall("DownloadDialogHandler", "C'tor()");
+		
 		mDownloadDialog = downloadDialog;
 	}
 	
 	@Override
 	public void handleMessage(Message msg) 
 	{
+		LogManager.LogFunctionCall("DownloadDialogHandler", "handleMessage()");
+		
 		super.handleMessage(msg);
 		
 		DownloadStates downloadStates = (DownloadStates)msg.obj;

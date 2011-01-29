@@ -2,6 +2,7 @@ package com.wifi.sapguestconnect.dialog;
 
 import com.wifi.sapguestconnect.R;
 import com.wifi.sapguestconnect.common.CommonFacade;
+import com.wifi.sapguestconnect.log.LogManager;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -13,6 +14,8 @@ public class AboutDialog
 {
 	public static void show(Context context)
 	{		
+		LogManager.LogFunctionCall("AboutDialog", "show()");
+		
 		Resources resources = context.getResources();
 		Dialog dialog = new Dialog(context);
 

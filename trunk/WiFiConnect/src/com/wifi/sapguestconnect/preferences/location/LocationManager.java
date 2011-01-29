@@ -3,7 +3,7 @@ package com.wifi.sapguestconnect.preferences.location;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.log.LogManager;
 
 import android.content.Context;
 
@@ -13,19 +13,14 @@ public class LocationManager
 	
 	private Context mContext = null;
 	private Map<String, ILocation> mLocationStrategy = null;
-	private LogHelper mLogHelper = null;
-	private boolean isLogEnabled = false;
 	
 	
 	private LocationManager(Context context)
 	{
+		LogManager.LogFunctionCall("LocationManager", "C'tor()");
+		
 		mContext = context;
 		mLocationStrategy = new HashMap<String, ILocation>();
-	    
-		// Init Log
-		mLogHelper = LogHelper.getLog();
-		isLogEnabled = mLogHelper.isLogEnabled();
-		mLogHelper.toLog(isLogEnabled, "LocationManager -> C'tor()");
 		
 		// Init Strategy
 		initStrategy();
@@ -33,25 +28,27 @@ public class LocationManager
 	
 	private void initStrategy()
 	{
-		mLogHelper.toLog(isLogEnabled, "LocationManager -> initStrategy()");
+		LogManager.LogFunctionCall("LocationManager", "initStrategy()");
 		
-		addNewStrategyEntry(new LocationIL(mContext));
+		addNewStrategyEntry(new LocationIL(mContext)); // TODO Fix - create an instance ON DEMAND and not all 
 		addNewStrategyEntry(new LocationDE(mContext));
 	}
 	
 	private void addNewStrategyEntry(ILocation location)
 	{
+		LogManager.LogFunctionCall("LocationManager", "addNewStrategyEntry()");
+		
 		mLocationStrategy.put(location.getLocationCode(), location);
 	}
 	
 	private ILocation getLocation(String locationId)
 	{
-		mLogHelper.toLog(isLogEnabled, "LocationManager -> getLocation()");
+		LogManager.LogFunctionCall("LocationManager", "getLocation()");
 		
 		ILocation location = mLocationStrategy.get(locationId);
 		if (location == null)
 		{
-			mLogHelper.toLog(isLogEnabled, "EXCEPTION: LocationManager -> getLocation("+locationId+")"+" Strategy Returned NULL. Using Fallback.");
+			LogManager.LogErrorMsg("LocationManager", "getLocation()", "Strategy Returned NULL. Using Fallback.");
 			location = new LocationIL(mContext); // Fallback
 		}
 		
@@ -60,6 +57,8 @@ public class LocationManager
 	
 	public static ILocation getLocation(Context context, String locationId)
 	{
+		LogManager.LogFunctionCall("LocationManager", "getLocation() [static]");
+		
 		if (LocationManager.instance == null) // not thread safe - doesn't need to be *YET*
 		{
 			LocationManager.instance = new LocationManager(context);

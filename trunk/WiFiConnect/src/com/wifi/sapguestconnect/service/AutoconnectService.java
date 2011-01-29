@@ -5,7 +5,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import com.wifi.sapguestconnect.connection.ConnectHelper;
-import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.log.LogManager;
 import com.wifi.sapguestconnect.notification.NotificationManager;
 
 import android.app.Service;
@@ -21,13 +21,14 @@ public class AutoconnectService extends Service
 	private final int TIME_MINUTE = 60 * TIME_SECOND;
 	private final int TIMER_PERIOD = 5 * TIME_MINUTE;
 	
-    private LogHelper logHelper;
-    private boolean isLogEnabled;
     private boolean isTimerSet = false;
     private Timer timer;
     
+    
     public static boolean Start(Context context)
     {
+    	LogManager.LogFunctionCall("AutoconnectService", "Start()");
+    	
     	ConnectHelper connectHelper = new ConnectHelper(context);
     	connectHelper.LoadLoginData();
     	
@@ -46,6 +47,8 @@ public class AutoconnectService extends Service
     
     public static boolean Stop(Context context)
     {
+    	LogManager.LogFunctionCall("AutoconnectService", "Stop()");
+    	
     	Intent autoConnectService = new Intent(context, AutoconnectService.class);
     	return context.stopService(autoConnectService);
     }
@@ -53,10 +56,7 @@ public class AutoconnectService extends Service
 	@Override
 	public void onCreate() 
 	{
-		// Init Log
-		logHelper = LogHelper.getLog();
-		isLogEnabled = logHelper.isLogEnabled();
-		logHelper.toLog(isLogEnabled, "AutoconnectService -> onCreate() started.");
+		LogManager.LogFunctionCall("AutoconnectService", "onCreate()");
 		
 		// Init Super
 		super.onCreate();
@@ -70,7 +70,7 @@ public class AutoconnectService extends Service
 	@Override
 	public void onStart(Intent intent, int startId) 
 	{
-		logHelper.toLog(isLogEnabled, "AutoconnectService -> onStart(Intent intent, int startId) started.");
+		LogManager.LogFunctionCall("AutoconnectService", "onStart()");
 		
 		super.onStart(intent, startId);
     
@@ -90,7 +90,7 @@ public class AutoconnectService extends Service
 	@Override
 	public void onDestroy() 
 	{
-		logHelper.toLog(isLogEnabled, "AutoconnectService -> onDestroy() started.");
+		LogManager.LogFunctionCall("AutoconnectService", "onDestroy()");
 		
 		super.onDestroy();
 		
@@ -103,7 +103,7 @@ public class AutoconnectService extends Service
 	public IBinder onBind(Intent arg0) 
 	{
 		// Log
-		logHelper.toLog(isLogEnabled, "AutoconnectService -> onBind(Intent arg0) started.");
+		LogManager.LogFunctionCall("AutoconnectService", "onBind()");
 		
 		return null;
 	}
@@ -116,7 +116,7 @@ public class AutoconnectService extends Service
 		
 		public ConnectionTimerTask(Context context)
 		{
-			logHelper.toLog(isLogEnabled, "AutoconnectService -> ConnectionTimerTask -> C'tor(Context context) started.");
+			LogManager.LogFunctionCall("AutoconnectService.ConnectionTimerTask", "C'tor()");
 			
 			wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 			connectHelper = new ConnectHelper(context, wm);
@@ -125,9 +125,16 @@ public class AutoconnectService extends Service
 		
         public void run() 
         { 
-        	logHelper.toLog(isLogEnabled, "AutoconnectService -> ConnectionTimerTask -> run() started.");
+        	LogManager.LogFunctionCall("AutoconnectService.ConnectionTimerTask", "run()");
 
-        	connectHelper.connectToWifi();
+        	try
+        	{
+        		connectHelper.connectToWifi();	
+        	}
+        	catch (Exception e)
+        	{
+        		LogManager.LogException(e, "AutoconnectService.ConnectionTimerTask", "run()");
+        	}
         } 
     }
 

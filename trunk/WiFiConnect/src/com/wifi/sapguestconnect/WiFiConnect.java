@@ -8,7 +8,7 @@ import com.wifi.sapguestconnect.connection.ConnectionFacade.IConnectionAttemptRe
 import com.wifi.sapguestconnect.connection.ConnectionFacade.IConnectionStatusResponse;
 import com.wifi.sapguestconnect.data.DataFacade;
 import com.wifi.sapguestconnect.dialog.AboutDialog;
-import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.log.LogManager;
 import com.wifi.sapguestconnect.preferences.SettingsActivity;
 import com.wifi.sapguestconnect.wifi.WatchdogService;
 
@@ -36,8 +36,6 @@ public class WiFiConnect extends Activity
 	private static final int BASE_GROUP_ID = 0;
 	private static final int BASE_ORDER_ID = 0;
 	
-	private LogHelper mLogHelper = null;
-	private boolean isLogEnabled = false;
 	private Resources mResources = null;
 	
 	private LoginData mLoginData = null;
@@ -52,10 +50,7 @@ public class WiFiConnect extends Activity
 		super.onCreate(savedInstanceState);
 	    setContentView(R.layout.wifi_connect);
 	    
-		// Init Log
-	    mLogHelper = LogHelper.getLog();
-		isLogEnabled = mLogHelper.isLogEnabled();
-		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> onCreate()");
+	    LogManager.LogFunctionCall("WiFiConnect", "onCreate()");
 		
 		// Init Resources
 		this.mResources = this.getResources();
@@ -116,7 +111,7 @@ public class WiFiConnect extends Activity
 	 */
 	private void initLayout()
 	{
-		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> initLayout()");
+		LogManager.LogFunctionCall("WiFiConnect", "initLayout()");
 		
 		initConnectBtnLayout();
 	}
@@ -124,8 +119,7 @@ public class WiFiConnect extends Activity
 	
 	private void initConnectBtnLayout() 
 	{
-		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> initConnectBtnLayout()");
-		
+		LogManager.LogFunctionCall("WiFiConnect", "initConnectBtnLayout()");
 		
 	    setViewOnClickListener(R.id.connect_button, new OnClickListener() {
 			@Override
@@ -182,8 +176,8 @@ public class WiFiConnect extends Activity
 	
 	private void setViewOnClickListener(int viewId, OnClickListener onClickListener)
 	{
-		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> setViewOnClickListener()");
-		
+		LogManager.LogFunctionCall("WiFiConnect", "setViewOnClickListener()");
+
 	    View view = (View) findViewById(viewId);
 	    view.setOnClickListener( onClickListener );
 	}
@@ -193,7 +187,7 @@ public class WiFiConnect extends Activity
 	{
 		super.onResume();
 		
-		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> onResume()");
+		LogManager.LogFunctionCall("WiFiConnect", "onResume()");
 		
 		// Refresh Login Data
 		this.mLoginData= DataFacade.LoadLoginData(this);
@@ -215,7 +209,7 @@ public class WiFiConnect extends Activity
 	
 	private void updateConnectionStatus(ConnectionStatus connStatus)
 	{
-		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> updateConnectionStatus()");
+		LogManager.LogFunctionCall("WiFiConnect", "updateConnectionStatus()");
 		
 		ImageView connStatusImg = (ImageView)findViewById(R.id.connect_button);
 		
@@ -259,7 +253,7 @@ public class WiFiConnect extends Activity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) 
 	{
-		mLogHelper.toLog(isLogEnabled, "WiFiConnect -> onCreateOptionsMenu()");
+		LogManager.LogFunctionCall("WiFiConnect", "onCreateOptionsMenu()");
 		
 		super.onCreateOptionsMenu(menu);
 		

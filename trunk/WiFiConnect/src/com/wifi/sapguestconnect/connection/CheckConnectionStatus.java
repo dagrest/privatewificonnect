@@ -5,21 +5,16 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.wifi.sapguestconnect.connection.ConnectionFacade.IConnectionStatusResponse;
-import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.log.LogManager;
 
 class CheckConnectionStatus implements Runnable
 {
 	private Context context;
 	private ConnectionStatusResponseHandler loginStatusResponseHandler = null;
-	private LogHelper logHelper;
-	private boolean isLogEnabled;
 	
 	public CheckConnectionStatus(Context context, ConnectionStatusResponseHandler loginStatusResponseHandler)
 	{
-		logHelper = LogHelper.getLog();
-		isLogEnabled = logHelper.isLogEnabled();
-		
-		logHelper.toLog(isLogEnabled, "CheckLoginStatus -> C'tor()");
+		LogManager.LogFunctionCall("CheckConnectionStatus", "C'tor()");
 		
 		this.context = context;
 		this.loginStatusResponseHandler = loginStatusResponseHandler;
@@ -28,7 +23,7 @@ class CheckConnectionStatus implements Runnable
 	@Override
 	public void run() 
 	{
-		logHelper.toLog(isLogEnabled, "CheckLoginStatus -> run()");
+		LogManager.LogFunctionCall("CheckConnectionStatus", "C'tor()");
 		
 		Message responseMsg = new Message();
 		responseMsg.obj = ConnectHelper.IsOnline(context);
@@ -41,6 +36,8 @@ class CheckConnectionStatus implements Runnable
 		
 		public ConnectionStatusResponseHandler(IConnectionStatusResponse connResponse)
 		{
+			LogManager.LogFunctionCall("CheckConnectionStatus.ConnectionStatusResponseHandler", "C'tor()");
+			
 			connectionResponse = connResponse;
 		}
 		
@@ -48,6 +45,8 @@ class CheckConnectionStatus implements Runnable
 		public void handleMessage(Message msg)
 		{
 			super.handleMessage(msg);
+			
+			LogManager.LogFunctionCall("CheckConnectionStatus.ConnectionStatusResponseHandler", "handleMessage()");
 			
 			if (connectionResponse != null)
 			{

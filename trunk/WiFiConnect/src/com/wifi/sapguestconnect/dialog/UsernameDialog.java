@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.wifi.sapguestconnect.R;
+import com.wifi.sapguestconnect.log.LogManager;
 
 public class UsernameDialog extends OkCancelDialog
 {
@@ -14,6 +15,8 @@ public class UsernameDialog extends OkCancelDialog
 	protected UsernameDialog(Context context, String initialUsername, IDialogResult dialogResultCallback) 
 	{
 		super(context, R.layout.username_dialog, R.id.ok_button, R.id.cancel_button, dialogResultCallback);
+		
+		LogManager.LogFunctionCall("UsernameDialog", "C'tor()");
 		
 		Resources resources = context.getResources();
 		
@@ -30,6 +33,8 @@ public class UsernameDialog extends OkCancelDialog
 	@Override
 	protected String getResult() 
 	{
+		LogManager.LogFunctionCall("UsernameDialog", "getResult()");
+		
 		EditText usernameEditText = (EditText)findViewById(R.id.username_input);
 		return usernameEditText.getText().toString();
 	}
@@ -37,11 +42,15 @@ public class UsernameDialog extends OkCancelDialog
 	
 	public static void show(Context context, IDialogResult dialogResultCallback)
 	{
+		LogManager.LogFunctionCall("UsernameDialog", "show(Context, String)");
+		
 		show(context, "", dialogResultCallback);
 	}
 	
 	public static void show(Context context, String initialUsername, IDialogResult dialogResultCallback)
 	{	
+		LogManager.LogFunctionCall("UsernameDialog", "show(Context, String, IDialogResult)");
+		
 		Dialog dialog = new UsernameDialog(context, initialUsername, dialogResultCallback);
 		
 		dialog.show();

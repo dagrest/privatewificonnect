@@ -1,5 +1,6 @@
 package com.wifi.sapguestconnect.wifi;
 
+import com.wifi.sapguestconnect.log.LogManager;
 import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 
 import android.content.BroadcastReceiver;
@@ -14,6 +15,8 @@ public class WatchdogAutostarter extends BroadcastReceiver
 	{
 		if (PreferencesFacade.isStartAtBoot(context))
 		{
+			LogManager.LogFunctionCall("WatchdogAutostarter", "onReceive()");
+			
 			WatchdogService.Start(context);	
 		}
 	}

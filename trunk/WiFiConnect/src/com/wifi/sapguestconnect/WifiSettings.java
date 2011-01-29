@@ -5,7 +5,7 @@ import com.wifi.sapguestconnect.dialog.IDialogResult;
 import com.wifi.sapguestconnect.dialog.PasswordDialog;
 import com.wifi.sapguestconnect.dialog.SelectNetworkListener;
 import com.wifi.sapguestconnect.dialog.UsernameDialog;
-import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.log.LogManager;
 import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 
 import android.app.Activity;
@@ -15,10 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 public class WifiSettings extends Activity
-{
-	private LogHelper mLogHelper = null;
-	private boolean isLogEnabled = false;
-	
+{	
 	private LoginData mLoginData = null;
 	
 	@Override
@@ -27,10 +24,7 @@ public class WifiSettings extends Activity
 	    super.onCreate(savedInstanceState);
 	    setContentView(R.layout.wifi_settings);
 	    
-		// Init Log
-	    mLogHelper = LogHelper.getLog();
-		isLogEnabled = mLogHelper.isLogEnabled();
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> onCreate()");
+	    LogManager.LogFunctionCall("WifiSettings", "onCreate()");
 	
 	    loadLoginData();
 	    
@@ -43,7 +37,7 @@ public class WifiSettings extends Activity
 	 */
 	private void initLayout()
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> initLayout()");
+		LogManager.LogFunctionCall("WifiSettings", "initLayout()");
 		
 		initUsernameEntryLayout();
 		initPasswordEntryLayout();
@@ -52,7 +46,7 @@ public class WifiSettings extends Activity
 	
 	private void initUsernameEntryLayout() 
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> initUsernameEntryLayout()");
+		LogManager.LogFunctionCall("WifiSettings", "initUsernameEntryLayout()");
 		
 	    setViewOnClickListener(R.id.user_name_entry, new OnClickListener() {
 				
@@ -61,6 +55,7 @@ public class WifiSettings extends Activity
 					UsernameDialog.show(WifiSettings.this, mLoginData.getUser(), new IDialogResult() {
 						@Override
 						public void OnFinish(Object result) {
+							LogManager.LogFunctionCall("WifiSettings", "initUsernameEntryLayout().onClick().OnFinish()");
 							setUserName((String)result);
 						}
 					});
@@ -70,7 +65,7 @@ public class WifiSettings extends Activity
 	
 	private void initPasswordEntryLayout()
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> initPasswordEntryLayout()");
+		LogManager.LogFunctionCall("WifiSettings", "initPasswordEntryLayout()");
 		
 	    setViewOnClickListener(R.id.password_entry, new OnClickListener() {
 			@Override
@@ -78,6 +73,7 @@ public class WifiSettings extends Activity
 				PasswordDialog.show(WifiSettings.this, new IDialogResult() {
 					@Override
 					public void OnFinish(Object result) {
+						LogManager.LogFunctionCall("WifiSettings", "initPasswordEntryLayout().onClick().OnFinish()");
 						setPassword((String)result);
 					}
 				});
@@ -87,13 +83,14 @@ public class WifiSettings extends Activity
 	
 	private void initSSIDEntryLayout() 
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> initSSIDEntryLayout()");
+		LogManager.LogFunctionCall("WifiSettings", "initSSIDEntryLayout()");
 		
 		setViewOnClickListener(R.id.wifi_ssid_entry, 
 				new SelectNetworkListener(this, new IDialogResult() {
 					
 					@Override
 					public void OnFinish(Object result) {
+						LogManager.LogFunctionCall("WifiSettings", "initPasswordEntryLayout().SelectNetworkListener().OnFinish()");
 						setWifiSSID((String)result);
 					}
 				}
@@ -102,7 +99,7 @@ public class WifiSettings extends Activity
 	
 	private void setViewOnClickListener(int viewId, OnClickListener onClickListener)
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> setViewOnClickListener()");
+		LogManager.LogFunctionCall("WifiSettings", "setViewOnClickListener()");
 		
 	    View view = (View) findViewById(viewId);
 	    view.setOnClickListener( onClickListener );
@@ -113,7 +110,7 @@ public class WifiSettings extends Activity
 	 */
 	private void setUserName(String userName) 
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> setUserName()");
+		LogManager.LogFunctionCall("WifiSettings", "setUserName()");
 		
 		validateLoginDataMember();
 		
@@ -136,14 +133,14 @@ public class WifiSettings extends Activity
 
 	protected String getUserName() 
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> getUserName()");
+		LogManager.LogFunctionCall("WifiSettings", "getUserName()");
 		
 		return mLoginData.getUser();
 	}
 
 	private void setPassword(String password) 
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> setPassword()");
+		LogManager.LogFunctionCall("WifiSettings", "setPassword()");
 		
 		validateLoginDataMember();
 		
@@ -162,14 +159,14 @@ public class WifiSettings extends Activity
 
 	protected String getPassword() 
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> getPassword()");
+		LogManager.LogFunctionCall("WifiSettings", "getPassword()");
 		
 		return mLoginData.getPass();
 	}
 
 	private void setWifiSSID(String wifiSSID) 
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> setWifiSSID()");
+		LogManager.LogFunctionCall("WifiSettings", "setWifiSSID()");
 		
 		validateLoginDataMember();
 		
@@ -192,14 +189,14 @@ public class WifiSettings extends Activity
 
 	protected String getWifiSSID() 
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> getWifiSSID()");
+		LogManager.LogFunctionCall("WifiSettings", "getWifiSSID()");
 		
 		return mLoginData.getSSID();
 	}
 	
 	private void validateLoginDataMember()
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> validateLoginDataMember()");
+		LogManager.LogFunctionCall("WifiSettings", "validateLoginDataMember()");
 		
 		if (mLoginData == null)
 		{
@@ -210,7 +207,7 @@ public class WifiSettings extends Activity
 	
 	private void loadLoginData()
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> loadLoginData()");
+		LogManager.LogFunctionCall("WifiSettings", "loadLoginData()");
 		
 	    LoginData loadedLoginData = DataFacade.LoadLoginData(this);
 	    setUserName(loadedLoginData.getUser());
@@ -220,7 +217,7 @@ public class WifiSettings extends Activity
 	
 	private void persistLoginData()
 	{
-		mLogHelper.toLog(isLogEnabled, "WifiSettings -> persistLoginData()");
+		LogManager.LogFunctionCall("WifiSettings", "persistLoginData()");
 		
 	    DataFacade.PersistLoginData(this, mLoginData);
 	}
@@ -229,6 +226,8 @@ public class WifiSettings extends Activity
 	protected void onPause() 
 	{
 		super.onPause();
+		
+		LogManager.LogFunctionCall("WifiSettings", "onPause()");
 		
 		PreferencesFacade.refreshRunAsService(this);
 	}

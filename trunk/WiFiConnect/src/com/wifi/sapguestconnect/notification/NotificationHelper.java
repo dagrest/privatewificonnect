@@ -2,6 +2,7 @@ package com.wifi.sapguestconnect.notification;
 
 import com.wifi.sapguestconnect.R;
 import com.wifi.sapguestconnect.WiFiConnect;
+import com.wifi.sapguestconnect.log.LogManager;
 import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 
 import android.app.Notification;
@@ -20,11 +21,15 @@ class NotificationHelper
     
     private NotificationHelper(Context context)
     {
+    	LogManager.LogFunctionCall("NotificationManager", "C'tor()");
+    	
     	notificationMgr =(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
     }
     
     private void sendNotification(Context context, int id, String title, String summary, boolean vibrate, boolean playSound, Uri soundURI) 
     { 
+    	LogManager.LogFunctionCall("NotificationManager", "sendNotification()");
+    	
     	if (isNotificationSet)
     		return;
     	
@@ -58,12 +63,16 @@ class NotificationHelper
         
     private void clearAllNotifications(Context context)
     {
+    	LogManager.LogFunctionCall("NotificationManager", "clearAllNotifications()");
+    	
     	notificationMgr.cancelAll();
     	isNotificationSet = false;
     }
     
     public static void displayNotificationMessage(Context context, int id, String title, String summary)
     {
+    	LogManager.LogFunctionCall("NotificationManager", "displayNotificationMessage()");
+    	
     	if (!PreferencesFacade.isShowIcon(context))
     		return;
     	
@@ -75,6 +84,8 @@ class NotificationHelper
 
     public static void clearAllNotificationMessages(Context context)
     {
+    	LogManager.LogFunctionCall("NotificationManager", "clearAllNotificationMessages()");
+    	
     	if (instance == null)
     		instance = new NotificationHelper(context);
     	
