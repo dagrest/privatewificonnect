@@ -1,6 +1,7 @@
 package com.wifi.sapguestconnect.autoupdate;
 
 import com.wifi.sapguestconnect.R;
+import com.wifi.sapguestconnect.log.LogManager;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -14,6 +15,8 @@ class DownloadDialog
 	
 	public DownloadDialog(Context context) 
 	{
+		LogManager.LogFunctionCall("DownloadDialog", "C'tor()");
+		
 		mContext = context;
 		
 		mResources = context.getResources();
@@ -26,21 +29,29 @@ class DownloadDialog
 	
 	public void show()
 	{
+		LogManager.LogFunctionCall("DownloadDialog", "show()");
+		
 		mProgressDialog.show();
 	}
 	
 	public void cancel()
 	{
+		LogManager.LogFunctionCall("DownloadDialog", "cancel()");
+		
 		mProgressDialog.cancel();
 	}
 	
 	public void updateState(DownloadStates downloadState)
 	{
+		LogManager.LogFunctionCall("DownloadDialog", "updateState(DownloadStates )");
+		
 		updateState(downloadState, -1);
 	}
 	
 	public void updateState(DownloadStates downloadState, int progressValue)
 	{
+		LogManager.LogFunctionCall("DownloadDialog", "updateState(DownloadStates, progressValue)");
+		
 	    switch(downloadState) 
 	    {
         	case MESSAGE_DOWNLOAD_STARTING :

@@ -1,5 +1,7 @@
 package com.wifi.sapguestconnect.dialog;
 
+import com.wifi.sapguestconnect.log.LogManager;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
@@ -10,8 +12,10 @@ public abstract class OkCancelDialog extends Dialog
 	private IDialogResult mDialogResult = null;
 	
 	public OkCancelDialog(Context context, int contentView, int okBtnId, int cancelBtnId, IDialogResult dialogResultCallback) 
-	{
+	{		
 		super(context);
+		
+		LogManager.LogFunctionCall("OkCancelDialog", "OkCancelDialog()");
 		
 		setContentView(contentView);
 		
@@ -29,6 +33,8 @@ public abstract class OkCancelDialog extends Dialog
     private class OnOkClickListener implements android.view.View.OnClickListener {
         @Override
         public void onClick(View v) {
+        	LogManager.LogFunctionCall("OkCancelDialog.OnOkClickListener", "onClick()");
+        	
 			if( mDialogResult != null ){
                 mDialogResult.OnFinish(getResult());
             }
@@ -40,6 +46,8 @@ public abstract class OkCancelDialog extends Dialog
         @Override
         public void onClick(View v) 
         {
+        	LogManager.LogFunctionCall("OkCancelDialog.OnCancelClickListener", "onClick()");
+        	
 			OkCancelDialog.this.cancel();
         }
     }

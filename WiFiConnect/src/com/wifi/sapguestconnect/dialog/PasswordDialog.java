@@ -1,6 +1,7 @@
 package com.wifi.sapguestconnect.dialog;
 
 import com.wifi.sapguestconnect.R;
+import com.wifi.sapguestconnect.log.LogManager;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -14,6 +15,8 @@ public class PasswordDialog extends OkCancelDialog
 	protected PasswordDialog(Context context, IDialogResult dialogResultCallback) 
 	{
 		super(context, R.layout.password_dialog, R.id.ok_button, R.id.cancel_button, dialogResultCallback);
+		
+		LogManager.LogFunctionCall("PasswordDialog", "PasswordDialog()");
 		
 		Resources resources = context.getResources();
 		
@@ -30,6 +33,8 @@ public class PasswordDialog extends OkCancelDialog
 	@Override
 	protected String getResult() 
 	{
+		LogManager.LogFunctionCall("PasswordDialog", "getResult()");
+		
 		EditText pwdEditText = (EditText)findViewById(R.id.password_input);
 		return pwdEditText.getText().toString();
 	}
@@ -37,6 +42,8 @@ public class PasswordDialog extends OkCancelDialog
 	
 	public static void show(Context context, IDialogResult dialogResultCallback)
 	{
+		LogManager.LogFunctionCall("PasswordDialog", "show()");
+		
 		Dialog dialog = new PasswordDialog(context, dialogResultCallback);
 	
 		dialog.show();

@@ -7,7 +7,7 @@ import android.os.Message;
 
 import com.wifi.sapguestconnect.LoginData;
 import com.wifi.sapguestconnect.connection.ConnectionFacade.IConnectionAttemptResponse;
-import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.log.LogManager;
 import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 
 class ConnectManager implements Runnable
@@ -16,19 +16,15 @@ class ConnectManager implements Runnable
 	private ConnectionAttemptResponseHandler mConnAttemptHandler = null;
 	private WifiManager mWifiManager = null;
 	private LoginData mLoginData = null;
-	private LogHelper mLogHelper = null;
-	private boolean isLogEnabled = false;
 	
 	public ConnectManager(Context context, ConnectionAttemptResponseHandler connectionHandler, LoginData loginData)
 	{
+		LogManager.LogFunctionCall("ConnectManager", "C'tor()");
+		
 		mContext = context;
 		mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
 		mConnAttemptHandler = connectionHandler;
 		
-		// Init Log
-	    mLogHelper = LogHelper.getLog();
-		isLogEnabled = mLogHelper.isLogEnabled();
-		mLogHelper.toLog(isLogEnabled, "ConnectManager -> C'tor()");
 		
 		mLoginData = loginData;	
 	}
@@ -36,13 +32,15 @@ class ConnectManager implements Runnable
 	@Override
 	public void run() 
 	{
+		LogManager.LogFunctionCall("ConnectManager", "run()");
+		
 		mConnAttemptHandler.sendMessage(connect());
 	}
 
 	
 	public Message connect() 
 	{	
-		mLogHelper.toLog(isLogEnabled, "ConnectManager -> connect()");
+		LogManager.LogFunctionCall("ConnectManager", "connect()");
 	    
 		Message responseMsg = new Message();
 		
@@ -69,7 +67,7 @@ class ConnectManager implements Runnable
 	    catch (Exception e) 
 	    {
 	    	responseMsg.obj = ConnectionErrorMessages.FAIL;
-    		mLogHelper.toLog(isLogEnabled, "EXCEPTION: ConnectManager -> connect(): " + e.getMessage());
+	    	LogManager.LogException(e, "ConnectManager", "connect()");
 		}
 	    
 		if (responseMsg.obj == null)
@@ -82,7 +80,7 @@ class ConnectManager implements Runnable
 	
 	private Message connectToWifi() 
 	{
-    	mLogHelper.toLog(isLogEnabled, "ConnectManager -> connectToWifi() started.");
+		LogManager.LogFunctionCall("ConnectManager", "connectToWifi()");
 
     	ConnectionStatus isConnected = ConnectionFacade.isConnected(mContext);
     	boolean isConnectedBool = false;
@@ -134,7 +132,7 @@ class ConnectManager implements Runnable
 		} 
 		catch (Exception e) 
 		{
-			mLogHelper.toLog(isLogEnabled, "EXCEPTION: ConnectManager -> connectToWifi(): " + e.getMessage());
+			LogManager.LogException(e, "ConnectManager", "connectToWifi()");
 		}
 		
 		if (responseMsg.obj == null)
@@ -151,6 +149,8 @@ class ConnectManager implements Runnable
 		
 		public ConnectionAttemptResponseHandler(IConnectionAttemptResponse connResponse)
 		{
+			LogManager.LogFunctionCall("ConnectManager.ConnectionAttemptResponseHandler", "C'tor()");
+			
 			connectionResponse = connResponse;
 		}
 		
@@ -158,6 +158,8 @@ class ConnectManager implements Runnable
 		public void handleMessage(Message msg)
 		{
 			super.handleMessage(msg);
+			
+			LogManager.LogFunctionCall("ConnectManager.ConnectionAttemptResponseHandler", "handleMessage()");
 			
 			if (connectionResponse != null)
 			{

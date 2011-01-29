@@ -19,7 +19,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.wifi.sapguestconnect.LoginData;
 import com.wifi.sapguestconnect.data.DataBaseHelper;
-import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.log.LogManager;
 import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 
 import android.content.Context;
@@ -35,41 +35,44 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 	private Context context;
     private LoginData loginData = new LoginData();
     private boolean isLoginDataChanged = false;
-	private LogHelper logHelper;
-	private boolean isLogEnabled;
 	private WifiManager wm = null;
 	
     public ConnectHelper(final Context context){
+    	LogManager.LogFunctionCall("ConnectHelper", "C'tor(Context)");
+    	
     	this.context = context;
     	this.wm = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);	
-    	logHelper = LogHelper.getLog();
-    	isLogEnabled = logHelper.isLogEnabled();
     	
     	LoadLoginData();
     }
 	
     public ConnectHelper(final Context context, final WifiManager wm){
+    	LogManager.LogFunctionCall("ConnectHelper", "C'tor(Context, WifiManager)");
+    	
     	this.context = context;
     	this.wm = wm;
-    	logHelper = LogHelper.getLog();
-    	isLogEnabled = logHelper.isLogEnabled();
     	
     	LoadLoginData();
     }
     
 	boolean isLoginDataChanged() {
+		LogManager.LogFunctionCall("ConnectHelper", "isLoginDataChanged()");
 		return isLoginDataChanged;
 	}
 
 	public LoginData getLoginData(){ // TODO make private
+		LogManager.LogFunctionCall("ConnectHelper", "getLoginData()");
 		return loginData;
 	}
 	
 	void setLoginDataChanged(boolean isLoginDataChanged) {
+		LogManager.LogFunctionCall("ConnectHelper", "isLoginDataChanged()");
 		this.isLoginDataChanged = isLoginDataChanged;
 	}
 
     boolean isLoginDataExist(final String user, final String pass, final String ssid){
+    	LogManager.LogFunctionCall("ConnectHelper", "isLoginDataExist()");
+    	
 		if(loginData.getUser() != null && loginData.getPass() != null && loginData.getSSID() != null &&
 		   loginData.getUser() != "" && loginData.getPass() != "" && loginData.getSSID() != "" &&
 		   loginData.getUser().equals(user) && 
@@ -82,11 +85,15 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 
     public boolean isConnectedToCorrectWiFi() 
     {
+    	LogManager.LogFunctionCall("ConnectHelper", "isConnectedToCorrectWiFi()");
+    	
 	    return isConnectedToCorrectWiFi(wm.getConnectionInfo().getSSID());
     }
     
     public boolean isConnectedToCorrectWiFi(final String ssID) 
     {
+    	LogManager.LogFunctionCall("ConnectHelper", "isConnectedToCorrectWiFi(String)");
+    	
     	if (wm.isWifiEnabled() && (ssID != null) && (ssID.trim().length() > 0))
     		return loginData.getSSID().compareToIgnoreCase(ssID) == 0;
     	else
@@ -94,18 +101,18 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
     }
     
 	public void saveLoginData(final String user, final String pass, final String netID){
-    	logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() started.");
+		LogManager.LogFunctionCall("ConnectHelper", "saveLoginData()");
 		DataBaseHelper myDbHelper = new DataBaseHelper(context);
 		try {
 				myDbHelper.createDataBase();
 		} catch (IOException ioe) {
-			logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() - EXCEPTION: " + ioe.getMessage());
+			LogManager.LogException(ioe, "ConnectHelper", "saveLoginData() [createDataBase]");
 			throw new Error("Unable to create database");
 		}
 		try {
 			myDbHelper.openDataBase();
 		} catch (SQLException sqle) {
-			logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() - EXCEPTION: " + sqle.getMessage());
+			LogManager.LogException(sqle, "ConnectHelper", "saveLoginData() [openDataBase]");
 			throw sqle;
 		}
 		
@@ -118,12 +125,13 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 		
 		isLoginDataChanged = false;
 		myDbHelper.close();
-    	logHelper.toLog(isLogEnabled, "ConnectHelper -> saveLoginData() ended.");
 	}
 
 	public boolean LoadLoginData() { // TODO move to a different class
+		LogManager.LogFunctionCall("ConnectHelper", "LoadLoginData()");
+		
 		boolean retCode = false;
-    	logHelper.toLog(isLogEnabled, "ConnectHelper -> LoadLoginData() started.");
+		
 		DataBaseHelper myDbHelper = new DataBaseHelper(context);
 		try {
 				Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' before 'createDataBase' ...");
@@ -131,7 +139,7 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 				retCode = true;
 				Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' after 'createDataBase' ...");
 		} catch (IOException ioe) {
-			logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> LoadLoginData(): Unable to create database. " + ioe.getMessage());
+			LogManager.LogException(ioe, "ConnectHelper", "LoadLoginData() [createDataBase]");
 			retCode = false;
 		}
 		try {
@@ -140,7 +148,7 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 			retCode = true;
 			Log.e("WiFiConnect", ">>>>WiFiConnect>>>> 'LoadLoginData' after 'openDataBase' ...");
 		} catch (SQLException sqle) {
-        	logHelper.toLog(isLogEnabled, "EXCEPTION: ConnectHelper -> LoadLoginData(): Unable to open DB. " + sqle.getMessage());
+			LogManager.LogException(sqle, "ConnectHelper", "LoadLoginData() [openDataBase]");
         	retCode = false;
 		}
 		
@@ -160,7 +168,6 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 //			loginData = myDbHelper.getLoginData(MY_DATABASE_TABLE);
 //		}
 
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> LoadLoginData() ended.");
     	return retCode;
     }
 
@@ -168,7 +175,7 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 
 	
 	public boolean isLoggedInToSAP(){
-    	logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedInToSAP() started.");
+		LogManager.LogFunctionCall("ConnectHelper", "isLoggedInToSAP()");
 		boolean isLoggedInToSAP = false;
 		
 		if(ifWifiEnabled() == true){
@@ -184,15 +191,14 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 	        	isLoggedInToSAP = (tmpHandler.getStatus() == 200);
 	        }
 	        catch (Throwable t) {
-	        	logHelper.toLog(isLogEnabled, "INFO: ConnectHelper -> isLoggedInToSAP(): Not logged in to Guest WiFi");
+	        	LogManager.LogInfoMsg("ConnectHelper", "isLoggedInToSAP()", "Not logged in to Guest WiFi");
 	        }
         }
-    	logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedInToSAP() ended.");
 		return isLoggedInToSAP;
 	}
 	
 	private ConnectionErrorMessages loginToSAPWiFi(){
-    	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() started.");
+		LogManager.LogFunctionCall("ConnectHelper", "loginToSAPWiFi()");
     	if(ifWifiEnabled() == true){
             String macAddress = getMacAddress();
             String ipAddress = getIPAddress();
@@ -206,29 +212,27 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
     	        logInToWiFi(httpsConnection);
     	        if(isLoggedIn(httpsConnection)){
     	        	//show message login succeeded
-    	        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
     	        	return ConnectionErrorMessages.SUCCESS;
     	        }
     	        else{
     	        	//show message login failed
-    	        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
     	        	return ConnectionErrorMessages.FAIL;
     	        }
             }
             else{
             	//show message that it is not SAP WiFi currently connected
-	        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
             	return ConnectionErrorMessages.UNKNOWN_WIFI;
             }
         }
         else{
-        	logHelper.toLog(isLogEnabled, "ConnectHelper -> loginToSAPWiFi() ended.");
         	return ConnectionErrorMessages.WIFI_TURNED_OFF;
         }
 	}
 	
 	public ConnectionErrorMessages connectToWifi()
 	{
+		LogManager.LogFunctionCall("ConnectHelper", "connectToWifi()");
+		
     	int attemptNumber = 0;
     	ConnectionErrorMessages lastLoginStatus = ConnectionErrorMessages.SUCCESS;
     	
@@ -244,7 +248,7 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
     	
     	if ((attemptNumber >= MAX_LOGIN_ATTEMPTS) && (!isLoggedInToSAP()))
     	{
-    		logHelper.toLog(isLogEnabled, "AutoconnectService -> ConnectionTimerTask -> Failed To Connect.");
+    		LogManager.LogInfoMsg("ConnectHelper", "connectToWifi()", "Failed To Connect");
     	}
 		
 		return lastLoginStatus;
@@ -252,7 +256,8 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 	
 	HttpsURLConnection openConnectionToHTTPS(String connUrl)
 	{
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> openConnectionToHTTPS() started.");
+		LogManager.LogFunctionCall("ConnectHelper", "openConnectionToHTTPS()");
+		
 		HttpsURLConnection httpsConnection = null;
 		try {
 			// Trust every server - dont check for any certificate 
@@ -309,9 +314,8 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 		}
 		catch(Exception e)
 		{
-			logHelper.toLog(isLogEnabled, "ConnectHelper -> openConnectionToHTTPS() - EXCEPTION: " + e.getMessage());
+			LogManager.LogException(e, "ConnectHelper", "openConnectionToHTTPS()");
 		}
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> openConnectionToHTTPS() ended.");
 		return httpsConnection;
 	}
 	//http://androidforums.com/android-applications/60650-send-data-https-android-application.html
@@ -320,7 +324,7 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 	//http://stackoverflow.com/questions/995514/https-connection-android
 
 	private void logInToWiFi(HttpsURLConnection httpsConnection){
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> logInToWiFi() started.");
+		LogManager.LogFunctionCall("ConnectHelper", "logInToWiFi()");
         // add url form parameters
 		OutputStream ostream = null;
 		try {
@@ -328,22 +332,21 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 			byte[] b = ("user=" + loginData.getUser() + "&password=" + loginData.getPass() + "&cmd=authenticate&Login=Log+In").getBytes();
 			ostream.write(b);
 		} catch (Exception e) {
-			logHelper.toLog(isLogEnabled, "ConnectHelper -> logInToWiFi() - \"httpsConnection.getOutputStream()->\"EXCEPTION: " + e.getMessage());
+			LogManager.LogException(e, "ConnectHelper", "openConnectionToHTTPS() [getOutputStream]");
 		} finally {
 			if (ostream != null) {
 				try {
 					ostream.flush();
 					ostream.close();
 				} catch (IOException e) {
-					logHelper.toLog(isLogEnabled, "ConnectHelper -> logInToWiFi() - \"ostream actions->\"EXCEPTION: " + e.getMessage());
+					LogManager.LogException(e, "ConnectHelper", "openConnectionToHTTPS() [finally]");
 				}
 			}
 		}
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> logInToWiFi() ended.");
 	}
 	
 	private boolean isLoggedIn(HttpsURLConnection httpsConnection){
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedIn() Started.");
+		LogManager.LogFunctionCall("ConnectHelper", "isLoggedIn()");
 		boolean isLoggedIn = false;
 		Object contents;
 		try {
@@ -361,60 +364,57 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 				if(response.contains("User Authenticated")){
 					// Logged in successfully
 					isLoggedIn = true;
-					logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedIn() - User \"" + 
+					LogManager.LogInfoMsg("ConnectHelper", "isLoggedIn()", "User \"" + 
 							this.loginData.getUser() + "\"authentication SUCCEEDED.");
 				} else {
-					logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedIn() - User \"" + 
-						this.loginData.getUser() + "\"authentication FAILED.");
+					LogManager.LogInfoMsg("ConnectHelper", "isLoggedIn()", "User \"" + 
+							this.loginData.getUser() + "\"authentication FAILED.");
 				}
 				
 			}
 			httpsConnection.disconnect();
 		} catch (IOException e) {
-			logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedIn() EXCEPTION - " + e.getMessage());
+			LogManager.LogException(e, "ConnectHelper", "isLoggedIn()");
 		}
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> isLoggedIn() ended.");
 		return isLoggedIn;
 	}
 	
 	String getMacAddress() {
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> getMacAddress() stared.");
+		LogManager.LogFunctionCall("ConnectHelper", "getMacAddress()");
 		String mac = null;
 		if (wm != null) {
 			WifiInfo wi = wm.getConnectionInfo();
 			mac = wi.getMacAddress();
 		}
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> getMacAddress() ended.");
 
 		return mac;
 	}
 	
 	String getSSID() {
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> getSSID() started.");
+		LogManager.LogFunctionCall("ConnectHelper", "getSSID()");
 		String ssid = null;
 
 		if (wm != null) {
 			WifiInfo wi = wm.getConnectionInfo();
 			ssid = wi.getSSID();
 		}
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> getSSID() ended.");
 
 		return ssid;
 	}
 	
 	boolean ifWifiEnabled() {
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> ifWifiEnabled() started.");
+		LogManager.LogFunctionCall("ConnectHelper", "ifWifiEnabled()");
 		boolean isEnabled = false;
 
 		if (wm != null) {
 			isEnabled = wm.isWifiEnabled();
 		}
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> ifWifiEnabled() ended.");
+
 		return isEnabled;
 	}
 	
 	String getIPAddress() {
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> getIPAddress() started.");		
+		LogManager.LogFunctionCall("ConnectHelper", "getIPAddress()");	
 		String strIP = null;
 		int ip = -1;
 
@@ -436,8 +436,7 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 				}
 			}
 			strIP = stringIP.toString();
-		}
-		logHelper.toLog(isLogEnabled, "ConnectHelper -> getIPAddress() ended.");		
+		}	
 		return strIP;
 	}
 	
@@ -448,6 +447,8 @@ public class ConnectHelper { // TODO remove PUBLIC modifier
 	
 	public static ConnectionStatus IsOnline(Context context)
 	{
+		LogManager.LogFunctionCall("ConnectHelper", "IsOnline()");
+		
 		WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);	
 		ConnectHelper connectHelper = new ConnectHelper(context);
 		boolean isOnline = connectHelper.isLoggedInToSAP();

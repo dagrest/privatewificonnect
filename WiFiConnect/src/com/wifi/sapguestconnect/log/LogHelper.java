@@ -7,13 +7,15 @@ import java.io.PrintWriter;
 import java.util.Calendar;
 import android.util.Log;
 
-public class LogHelper {
+class LogHelper {
+	
+	private static final String DELIMITER = "\t"; 
 
-	private static final String logDirectoryPath = "/sdcard/WiFiConnect/";
-	private static final String logFileName = "WiFiConnect.log";
+	private static final String logDirectoryPath = "/sdcard/WifiConnect/";
+	private static final String logFileName = "WifiConnect.log";
 	// if the file exists in "/sdcard/WiFiConnect/" folder
 	// write logs to "/sdcard/WiFiConnect/WiFiConnect.log"
-	private static final String configFile = "config.dat";
+	private static final String enableLogDirectory = "enable_log";
 	private static LogHelper instance;
 	private static boolean isLogEnabled;
 	private Object lockMe = null;
@@ -45,9 +47,33 @@ public class LogHelper {
 		return instance;
 	}
 	
-	public void toLog(final boolean isLogEnabled, final String logMessage){
+	public void toLog(final MessageType msgType, final String logMessage)
+	{
+		String buildMsg = "";
 		
-		if(isLogEnabled == true)
+		//buildMsg = getTimestamp() + DELIMITER;
+
+		// Message Type
+		buildMsg += Wrap(msgType.toString()) + DELIMITER;
+		
+		// Thread ID
+		final long threadId = Thread.currentThread().getId();
+		buildMsg += Wrap(String.valueOf(threadId))+DELIMITER;
+		
+		// Message
+		buildMsg += logMessage;
+		
+		toLog(buildMsg);
+	}
+
+//	public void toLog(final boolean isLoggedEnabledDeprecated, final String logMessage) // TODO DEPRECATED
+//	{
+//		toLog(logMessage);
+//	}
+	
+	public void toLog(final String logMessage){
+		
+		if(isLogEnabled() == true)
 		{
 			final String timeStamp = getTimestamp();
 			Thread t = new Thread(new Runnable() { // TODO Change to Threadpool
@@ -63,7 +89,7 @@ public class LogHelper {
 				        //ex.printStackTrace(pw);
 						
 						
-				        pw.println(timeStamp+" "+logMessage);
+				        pw.println(timeStamp+DELIMITER+logMessage);
 				        pw.flush();
 				        pw.close();
 				    } catch (IOException e) {
@@ -77,12 +103,15 @@ public class LogHelper {
 		}
 	}
 	
-	private void checkIsLogEnabled(){
-		File settingsFile = new File(logDirectoryPath + configFile);
-		if(settingsFile.exists()){
+	private void checkIsLogEnabled()
+	{
+		File enableDirectory = new File(logDirectoryPath + enableLogDirectory);
+		if(enableDirectory.exists())
+		{
 			isLogEnabled = true;
 		}
-		else{
+		else
+		{
 			isLogEnabled = false;
 		}
 	}
@@ -101,6 +130,11 @@ public class LogHelper {
 		int minute = now.get(Calendar.MINUTE);
 		int second = now.get(Calendar.SECOND);
 		
-		return "["+year+"."+month+"."+day+" "+hour+":"+minute+":"+second+"]";
+		return Wrap(year+"."+month+"."+day+" "+hour+":"+minute+":"+second);
+	}
+	
+	private static String Wrap(String string)
+	{
+		return "["+string+"]";
 	}
 }

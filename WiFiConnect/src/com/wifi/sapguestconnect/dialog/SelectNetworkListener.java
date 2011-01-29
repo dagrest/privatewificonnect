@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import com.wifi.sapguestconnect.R;
-import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.log.LogManager;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -26,18 +26,13 @@ public class SelectNetworkListener implements OnClickListener
 	private Resources resources = null;
 	
 	String ssidArray[]  = null;
-	private LogHelper logHelper;
-	private boolean isLogEnabled;
 	private IDialogResult mDialogResult;
 	
 	public SelectNetworkListener(Context context, IDialogResult onDialogResult) 
 	{
-		super();
+		super();	
 		
-		// Init Log
-		logHelper = LogHelper.getLog();
-		isLogEnabled = logHelper.isLogEnabled();
-		logHelper.toLog(isLogEnabled, "SelectNetworkListener -> C'tor()");
+		LogManager.LogFunctionCall("SelectNetworkListener", "C'tor()");
 		
 		this.context = context; // intentional no NULL check for this
 		
@@ -49,7 +44,8 @@ public class SelectNetworkListener implements OnClickListener
 	
 	public void onClick(View view) 
 	{
-		logHelper.toLog(isLogEnabled, "SelectNetworkListener-> displayWifiPickerDialog() started.");
+		LogManager.LogFunctionCall("SelectNetworkListener", "onClick()");
+		
 		if (wifiManager.isWifiEnabled())
 		{
 			displayWifiPickerDialog();
@@ -63,7 +59,7 @@ public class SelectNetworkListener implements OnClickListener
 	
 	private void displayWifiPickerDialog()
 	{
-		logHelper.toLog(isLogEnabled, "SelectNetworkListener-> displayWifiPickerDialog() started.");
+		LogManager.LogFunctionCall("SelectNetworkListener", "displayWifiPickerDialog()");
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		List<ScanResult> scanRes = this.wifiManager.getScanResults();
@@ -84,6 +80,8 @@ public class SelectNetworkListener implements OnClickListener
 		builder.setItems(ssidArray, new DialogInterface.OnClickListener() {
 		    public void onClick(DialogInterface dialog, int item) 
 		    {
+		    	LogManager.LogFunctionCall("SelectNetworkListener.AlertDialog.Builder", "setItems().onClick()");
+		    	
 		    	if (mDialogResult != null)
 		    	{
 		    		mDialogResult.OnFinish(ssidArray[item]);
@@ -96,12 +94,16 @@ public class SelectNetworkListener implements OnClickListener
 	
 	private void displayWifiDisabledDialog()
 	{
+		LogManager.LogFunctionCall("SelectNetworkListener", "displayWifiDisabledDialog()");
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(resources.getString(R.string.wifi_enable_question))
 		       .setCancelable(false)
 		       .setPositiveButton(resources.getString(R.string.yes), new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) 
 		           {
+		        	   LogManager.LogFunctionCall("SelectNetworkListener", "displayWifiDisabledDialog().setPositiveButton().onClick()");
+		        	   
 		               if (wifiManager.setWifiEnabled(true))
 		               {
 		            	   int timout = 0;
@@ -131,6 +133,8 @@ public class SelectNetworkListener implements OnClickListener
 		       })
 		       .setNegativeButton(resources.getString(R.string.no), new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
+		        	   LogManager.LogFunctionCall("SelectNetworkListener", "displayWifiDisabledDialog().setNegativeButton().onClick()");
+		        	   
 		                dialog.cancel();
 		           }
 		       });
@@ -140,6 +144,8 @@ public class SelectNetworkListener implements OnClickListener
 	
 	private void displayUnableToEnableWifiDialog()
 	{
+		LogManager.LogFunctionCall("SelectNetworkListener", "displayUnableToEnableWifiDialog()");
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setMessage(resources.getString(R.string.wifi_enable_error))
 		       .setCancelable(false)
@@ -151,7 +157,9 @@ public class SelectNetworkListener implements OnClickListener
 //		       })
 		       .setNegativeButton(resources.getString(R.string.cancel), new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
-		                dialog.cancel();
+		        	   LogManager.LogFunctionCall("SelectNetworkListener", "displayUnableToEnableWifiDialog().setNegativeButton().onClick()");
+		        	   
+		        	   dialog.cancel();
 		           }
 		       });
 		AlertDialog alert = builder.create();

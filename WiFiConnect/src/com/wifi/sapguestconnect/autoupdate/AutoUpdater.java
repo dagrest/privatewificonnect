@@ -15,7 +15,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.wifi.sapguestconnect.R;
 import com.wifi.sapguestconnect.common.CommonFacade;
-import com.wifi.sapguestconnect.log.LogHelper;
+import com.wifi.sapguestconnect.log.LogManager;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -35,15 +35,10 @@ public class AutoUpdater
 	private final Context mContext;
 	private DownloadDialogHandler mDownloadHandler = null;
 	private Resources mResources = null;
-	private LogHelper mLogHelper = null;
-	private boolean isLogEnabled = false;
 	
 	private AutoUpdater(Context context)
 	{
-		// Init Log
-	    mLogHelper = LogHelper.getLog();
-		isLogEnabled = mLogHelper.isLogEnabled();
-		mLogHelper.toLog(isLogEnabled, "AutoUpdater -> C'tor()");
+		LogManager.LogFunctionCall("AutoUpdater", "C'tor()");
 		
 		this.mContext = context;
 		this.mResources = context.getResources();
@@ -68,7 +63,7 @@ public class AutoUpdater
      */
     private void checkForUpdate() 
     {
-    	mLogHelper.toLog(isLogEnabled, "AutoUpdater -> checkForUpdate()");
+    	LogManager.LogFunctionCall("AutoUpdater", "checkForUpdate()");
     	
     	if (!isUpdateEnabled()) 
     	{
@@ -77,6 +72,8 @@ public class AutoUpdater
     	
     	new Thread(new Runnable(){
 			public void run(){
+				LogManager.LogInfoMsg("AutoUpdater", "checkForUpdate().Thread.run()", "Checking for updates...");
+				
 				Looper.prepare();
 				// Getting Properties
 				Properties updateProperties = queryForProperty(APPLICATION_PROPERTIES_URL);
@@ -98,9 +95,10 @@ public class AutoUpdater
     }
    
     private void downloadUpdate(final String downloadFileUrl, final String fileName) {
-    	mLogHelper.toLog(isLogEnabled, "AutoUpdater -> downloadUpdate()");
+    	LogManager.LogFunctionCall("AutoUpdater", "downloadUpdate()");
     	new Thread(new Runnable(){
 			public void run(){
+				LogManager.LogInfoMsg("AutoUpdater", "downloadUpdate().Thread.run()", "Downloading update...");
 				Message msg = Message.obtain();
             	msg.obj = DownloadStates.MESSAGE_DOWNLOAD_STARTING;
             	mDownloadHandler.sendMessage(msg);
@@ -114,12 +112,12 @@ public class AutoUpdater
     
     private boolean isUpdateEnabled()
     {
-    	mLogHelper.toLog(isLogEnabled, "AutoUpdater -> isUpdateEnabled()");
+    	LogManager.LogFunctionCall("AutoUpdater", "isUpdateEnabled()");
     	return true;
     }
     
 	private Properties queryForProperty(String url) {
-		mLogHelper.toLog(isLogEnabled, "AutoUpdater -> queryForProperty()");
+		LogManager.LogFunctionCall("AutoUpdater", "queryForProperty()");
 		Properties properties = null; 
 		HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(String.format(url));
@@ -145,7 +143,7 @@ public class AutoUpdater
 	}
 	
 	private boolean downloadUpdateFile(String downloadFileUrl, String destinationFilename) {
-		mLogHelper.toLog(isLogEnabled, "AutoUpdater -> downloadUpdateFile()");
+		LogManager.LogFunctionCall("AutoUpdater", "downloadUpdateFile()");
 		if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED) == false) {
 			return false;
 		}
@@ -163,7 +161,7 @@ public class AutoUpdater
 	}
 	
 	private boolean downloadFile(String url, String destinationDirectory, String destinationFilename) {
-		mLogHelper.toLog(isLogEnabled, "AutoUpdater -> downloadFile()");
+		LogManager.LogFunctionCall("AutoUpdater", "downloadFile()");
 		boolean filedownloaded = true;
 		HttpClient client = new DefaultHttpClient();
         HttpGet request = new HttpGet(String.format(url));
@@ -196,6 +194,7 @@ public class AutoUpdater
         } 
         catch (IOException e) 
         {
+        	LogManager.LogException(e, "AutoUpdater", "downloadFile()");
         	filedownloaded = false;
         }
         msg = Message.obtain();
@@ -206,18 +205,22 @@ public class AutoUpdater
 	
 	private void displayUpdateDialog(final String fileName, String updateTitle, String updateMessage)
 	{
+		LogManager.LogFunctionCall("AutoUpdater", "displayUpdateDialog()");
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 		builder.setMessage(mResources.getString(R.string.new_version_update_question))
 		       .setCancelable(false)
 		       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) 
 		           {
+		        	   LogManager.LogFunctionCall("AutoUpdater", "displayUpdateDialog().AlertDialog.Builder.PositiveButton.onClick()");
 		        	   dialog.cancel();
 		        	   downloadUpdate(APPLICATION_DATA_BASE_URL + fileName, fileName);
 		           }
 		       })
 		       .setNegativeButton("No", new DialogInterface.OnClickListener() {
 		           public void onClick(DialogInterface dialog, int id) {
+		        	   LogManager.LogFunctionCall("AutoUpdater", "displayUpdateDialog().AlertDialog.Builder.NegativeButton.onClick()");
 		                dialog.cancel();
 		           }
 		       });
@@ -228,6 +231,8 @@ public class AutoUpdater
 	
 	public static void CheckForUpdate(Context context)
 	{
+		LogManager.LogFunctionCall("AutoUpdater", "CheckForUpdate()");
+		
 		AutoUpdater autoUpdater = new AutoUpdater(context);
 		autoUpdater.checkForUpdate();
 	}
