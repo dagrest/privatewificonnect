@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<string name="israel">Israel</string>
-<string name="israel_code">IL</string>
+<string name="brazil">Brazil</string>
+<string name="brazil_code">BR</string>
+
+<string name="canada">Canada</string>
+<string name="canada_code">CA</string>
 
 <string name="germany">Germany</string>
 <string name="germany_code">DE</string>
+
+<string name="israel">Israel</string>
+<string name="israel_code">IL</string>
 
 </resources>

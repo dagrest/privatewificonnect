@@ -9,6 +9,7 @@ import android.content.res.Resources;
 class LocationIL implements ILocation
 {
 	private final int codeResource = R.string.israel_code;
+	private final int hostNameResource = R.string.host_name_sap;
 	private Context mContext;
 	private Resources mResources;
 	
@@ -27,7 +28,7 @@ class LocationIL implements ILocation
 	{
 		LogManager.LogFunctionCall("LocationIL", "getConnectionHostName()");
 		
-		return "wlan.sap.com";
+		return mResources.getString(hostNameResource);
 	}
 
 	@Override
