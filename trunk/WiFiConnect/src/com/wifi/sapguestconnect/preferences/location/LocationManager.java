@@ -30,8 +30,10 @@ public class LocationManager
 	{
 		LogManager.LogFunctionCall("LocationManager", "initStrategy()");
 		
-		addNewStrategyEntry(new LocationIL(mContext)); // TODO Fix - create an instance ON DEMAND and not all 
+		addNewStrategyEntry(new LocationBR(mContext)); // TODO Fix - create an instance ON DEMAND and not all
+		addNewStrategyEntry(new LocationCA(mContext));
 		addNewStrategyEntry(new LocationDE(mContext));
+		addNewStrategyEntry(new LocationIL(mContext));  	
 	}
 	
 	private void addNewStrategyEntry(ILocation location)
