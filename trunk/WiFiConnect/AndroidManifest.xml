@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest 
 	package="com.wifi.sapguestconnect"
-    xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.33 Alpha" android:versionCode="33">
+    xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="0.34 Alpha" android:versionCode="34">
     <application 
     	android:label="@string/app_name" android:debuggable="true" android:icon="@drawable/sap_connect">
 
