@@ -31,7 +31,7 @@
     </style>
     
     <style name="MenuItemImage.More" >
-    	<item name="android:src">@drawable/menuitem_more</item>
+    	<item name="android:src">@drawable/menuitem_more2</item>
     </style>
 
     <style name="Title" parent="@android:style/TextAppearance.Large">
