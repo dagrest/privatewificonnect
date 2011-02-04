@@ -9,6 +9,7 @@ import com.wifi.sapguestconnect.connection.ConnectionFacade.IConnectionStatusRes
 import com.wifi.sapguestconnect.data.DataFacade;
 import com.wifi.sapguestconnect.dialog.AboutDialog;
 import com.wifi.sapguestconnect.log.LogManager;
+import com.wifi.sapguestconnect.preferences.PreferencesFacade;
 import com.wifi.sapguestconnect.preferences.SettingsActivity;
 import com.wifi.sapguestconnect.wifi.WatchdogService;
 
@@ -68,6 +69,8 @@ public class WiFiConnect extends Activity
 		
 		WatchdogService.Start(this);
 		
+		// Sets the default location
+	    PreferencesFacade.initLocation(this);
 	}
 	
 	
