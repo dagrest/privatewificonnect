@@ -33,7 +33,7 @@ class NotificationHelper
     	if (isNotificationSet)
     		return;
     	
-        Notification notification = new Notification(R.drawable.sap_connect, summary, System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.sap_connect, null, System.currentTimeMillis());
  
         PendingIntent contentIntent =  PendingIntent.getActivity(context, 0, new Intent(context, WiFiConnect.class), 0); // TODO get class name from Manifest
  
