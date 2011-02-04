@@ -24,6 +24,20 @@
 <string name="pref_settings_start_at_boot_summary">Start the application at boot</string>
 <string name="pref_settings_start_at_boot_key">startAtBoot</string>
 
+<string name="pref_settings_location">Location</string>
+<string name="pref_settings_location_summary">Choose your location</string>
+<string name="pref_settings_location_key">location</string>
+<string name="pref_settings_location_dialog_title">Location</string>
+
+<string name="pref_connection_custom_settings_host_name">Hostname</string>
+<string name="pref_connection_custom_settings_host_name_summary">Choose the hostname to use in the connection</string>
+<string name="pref_connection_custom_settings_host_name_key">hostName</string>
+<string name="pref_connection_custom_settings_host_name_dialog_title">Select a hostname</string>
+
+<string name="pref_settings_location_custom_settings">Custom settings</string>
+<string name="pref_settings_location_custom_settings_summary">To enable this, choose custom settings from the Location settings menu</string>
+<string name="pref_settings_location_custom_settings_key">locationCustomSettings</string>
+
 <string name="pref_settings_enable_connection_sound">Enable sound</string>
 <string name="pref_settings_enable_connection_sound_summary">Enable notification sound on connection</string>
 <string name="pref_settings_enable_connection_sound_key">enableConnectSound</string>
@@ -66,24 +80,38 @@
 <string name="wifi_disabled">Wifi disabled. Unable to connect.</string>
 
 <array name="location_text">
+	<item>@string/pref_settings_location_custom_text</item>
 	<item>@string/brazil</item>
 	<item>@string/canada</item>
 	<item>@string/germany</item>
 	<item>@string/israel</item>
 </array>
 <string-array name="location_id">
+	<item>@string/pref_settings_location_custom_id</item>
 	<item>@string/brazil_code</item>
 	<item>@string/canada_code</item>
 	<item>@string/germany_code</item>
 	<item>@string/israel_code</item>
 </string-array>
-<string name="pref_settings_location_default_value">IL</string>
-<string name="pref_settings_location">Location</string>
-<string name="pref_settings_location_summary">Choose your location</string>
-<string name="pref_settings_location_key">location</string>
-<string name="pref_settings_location_dialog_title">Location</string>
+<string name="pref_settings_location_default_value">@string/germany_code</string>
+<string name="pref_settings_location_custom_text">Custom settings</string>
+<string name="pref_settings_location_custom_id">CUSTOM</string>
 
+
+<string name="host_name_aruba_networks_txt">ArubaNetworks.com</string>
 <string name="host_name_aruba_networks">securelogin.arubanetworks.com</string>
+<string name="host_name_sap_txt">SAP.com</string>
 <string name="host_name_sap">wlan.sap.com</string>
+
+<array name="host_name_text">
+	<item>@string/host_name_aruba_networks_txt</item>
+	<item>@string/host_name_sap_txt</item>
+</array>
+<string-array name="host_name_value">
+	<item>@string/host_name_aruba_networks</item>
+	<item>@string/host_name_sap</item>
+</string-array>
+
+<string name="pref_settings_host_name_default_value">@string/host_name_sap</string>
 
 </resources>

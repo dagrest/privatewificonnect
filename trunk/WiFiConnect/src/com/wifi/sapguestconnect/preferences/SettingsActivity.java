@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 
 public class SettingsActivity extends PreferenceActivity 
@@ -56,6 +57,12 @@ public class SettingsActivity extends PreferenceActivity
 		
 		// Init Ringtone Preference
 		initRingtonePreferenceUI();
+		
+		// Init Location Settings UI
+		initLocationSettingsUI();
+		
+		// Init Location Custom Settings UI
+		initLocationCustomSettingsUI();
 	}
 	
 	
@@ -113,6 +120,45 @@ public class SettingsActivity extends PreferenceActivity
 
         Preference enableConnectSoundPref = getPreferenceByKey (R.string.pref_settings_ringtone_key);
         enableConnectSoundPref.setDependency(resources.getString(R.string.pref_settings_enable_connection_sound_key));		
+	}
+
+	private void initLocationSettingsUI()
+	{
+		LogManager.LogFunctionCall("SettingsActivity", "initLocationSettingsUI()");
+		
+		Preference locationSettingsPref = getPreferenceByKey (R.string.pref_settings_location_key);
+		locationSettingsPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+		{
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				String location = (String) newValue;
+				
+				if (location.equalsIgnoreCase(resources.getString(R.string.pref_settings_location_custom_id)))
+				{
+					setLocationCustomSettingsUIEnabled(true);
+				}
+				else
+				{
+					setLocationCustomSettingsUIEnabled(false);
+				}
+				
+				return true;
+			}
+		});
+	}
+	
+	private void initLocationCustomSettingsUI()
+	{
+		// Log
+		LogManager.LogFunctionCall("SettingsActivity", "initLocationCustomSettingsUI()");
+		
+		setLocationCustomSettingsUIEnabled(PreferencesFacade.isUseCustomLocation(this));
+	}
+	
+	private void setLocationCustomSettingsUIEnabled(boolean isEnabled)
+	{
+		Preference customSettingsPref = getPreferenceByKey (R.string.pref_settings_location_custom_settings_key);
+		customSettingsPref.setEnabled(isEnabled);
 	}
 	
 	private Preference getPreferenceByKey(int preferenceKey)

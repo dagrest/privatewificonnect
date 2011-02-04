@@ -33,6 +33,24 @@
 			    android:entryValues="@array/location_id" 
 			    android:dialogTitle="@string/pref_settings_location_dialog_title" 
 			    android:defaultValue="@string/pref_settings_location_default_value" />
+			    
+				    
+	<PreferenceScreen 
+					android:key="@string/pref_settings_location_custom_settings_key"
+					android:title="@string/pref_settings_location_custom_settings" 
+					android:summary="@string/pref_settings_location_custom_settings_summary" >
+     
+	    <ListPreference
+					android:key="@string/pref_connection_custom_settings_host_name_key" 
+				    android:title="@string/pref_connection_custom_settings_host_name" 
+				    android:summary="@string/pref_connection_custom_settings_host_name_summary" 
+				    android:entries="@array/host_name_text" 
+				    android:entryValues="@array/host_name_value" 
+				    android:dialogTitle="@string/pref_connection_custom_settings_host_name_dialog_title" 
+				    android:defaultValue="@string/pref_settings_host_name_default_value" />
+                
+     </PreferenceScreen>           
+			    
     </PreferenceCategory>   
     
     <PreferenceCategory android:title="@string/pref_additional_settings_category" android:key="@string/pref_additional_settings_category_key">
